@@ -1,0 +1,36 @@
+{
+  "name": "nortonthesisfrontend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
+    "axios": "^1.13.2",
+    "bootstrap": "^5.3.8",
+    "lucide-vue-next": "^0.562.0",
+    "motion-v": "^2.2.1",
+    "nprogress": "^0.2.0",
+    "ogl": "^1.0.11",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.22",
+    "vue-router": "^4.6.3",
+    "vue3-otp-input": "^0.5.40"
+  },
+  "devDependencies": {
+    "@types/nprogress": "^0.2.3",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "prettier": "3.6.2",
+    "vite": "^7.1.11",
+    "vite-plugin-vue-devtools": "^8.0.3"
+  }
+}

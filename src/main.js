@@ -1,0 +1,32 @@
+//Style file
+import './assets/styles/main.css'
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import router from './router'
+// =========================================================================================
+// Make global
+import axios from 'axios'
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
+// =========================================================================================
+
+//Import Bootstrap
+import '../node_modules/bootstrap/dist/js/bootstrap.bundle.js'
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(router)
+app.mount('#app')
+
+// =====================================================================================
+//Lucide icon
+import * as LucideIcons from 'lucide-vue-next'
+for (const [key, component] of Object.entries(LucideIcons)) {
+  app.component(key, component)
+}
+// =====================================================================================
+import { AuthStore } from './stores/AuthStore'
+const auth = AuthStore()
+auth.loadSession()

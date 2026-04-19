@@ -1,0 +1,159 @@
+.auth{
+    .card{
+        box-shadow: 0 0 15px 1px rgba(255, 255, 255, 0.06);
+        border-radius: 20px;
+        background-color: #18181848;
+        padding: 8vh 8vh;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.077);
+    }
+    .card .desc{
+        font-size: 15px!important;
+    }
+    .ogl-container {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+    .ogl{
+        width: 750px;
+        height: 750px;
+        right: -200px;
+        top: -250px!important;
+        z-index: -10;
+    }
+    .ogl-second{
+        width: 450px;
+        height: 450px;
+        left: -150px!important;
+        bottom: -100px!important;
+        z-index: -10;
+    }
+    .or-line{
+        width: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .or-line::after{
+        content: '';
+        position: absolute;
+        width: 45%;
+        height: 0.5px!important;
+        left: 0;
+        top: 50%;
+        background-color: rgba(255, 255, 255, 0.307);
+    }
+    .or-line::before{
+        content: '';
+        position: absolute;
+        width: 45%;
+        height: 0.5px!important;
+        right: 0;
+        top: 50%;
+        background-color: rgba(255, 255, 255, 0.307);
+    }
+    .or-line span{
+        font-size: 13px!important;
+    }
+    .failed-message-box{
+        border: 1px solid rgba(255, 0, 0, 0.347);
+        color: rgb(255, 110, 110)!important;
+        font-size: 14px!important;
+        padding: 15px;
+        border-radius: 15px!important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(192, 0, 0, 0.166)!important;
+    }
+    .failed-message-box .icon{
+        stroke: rgb(255, 110, 110)!important;
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+    }
+}
+.auth.forgotPassword, .auth.verify{
+    min-height: calc(100vh - 139px);
+    flex: 1;
+    /* height: calc(100vh - 144.09px); */
+    .ogl-second{
+        width: 350px!important;
+        height: 350px!important;
+        left: -120px!important;
+        bottom: 200px!important;
+        z-index: -10;
+    }
+    .ogl{
+        width: 750px;
+        height: 750px;
+        right: -250px;
+        top: -300px!important;
+        z-index: -10;
+    }
+    form.OTP input{
+        height: 60px!important;
+        width: 60px!important;
+        border-radius: 15px!important;
+        text-align: center;
+    }   
+    form.OTP .otp-input{
+        width: 100%!important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    form.OTP .otp-input-err input{
+        border: 1px solid rgba(255, 50, 50, 0.593)!important;
+        background-color: rgba(255, 0, 0, 0.085)!important;
+    }
+    form.OTP .otp-input.otp-input-err input:hover,
+    form.OTP .otp-input.otp-input-err input:focus{
+        background-color: rgba(255, 0, 0, 0.188)!important;
+        box-shadow: 0 0 30px 1px #ff000029!important;
+        border: 1px solid rgba(255, 50, 50, 0.593)!important;
+    }
+    /* ------------------------------------------- */
+    form.OTP .otp-input-disabled input{
+        border: 1px solid rgba(255, 255, 255, 0.437)!important;
+        background-color: rgba(128, 128, 128, 0.437)!important;
+    }
+    form.OTP .otp-input.otp-input-disabled input:hover,
+    form.OTP .otp-input.otp-input-disabled input:focus{
+        /* background-color: rgba(255, 0, 0, 0.188)!important; */
+        box-shadow: none!important;
+        /* border: 1px solid rgba(255, 50, 50, 0.593)!important; */
+    }
+}
+.authHeader{
+    .btn.back, .btn.back .icon{
+        transition: 0.5s;
+    }
+    .btn.back:hover, .btn.back:hover .icon{
+        /* color: #e17eff!important;
+        stroke: #d257f7; */
+        text-decoration: underline!important;
+    }
+}
+.subTitle{
+    color: white;
+    font-size: 26px;
+    font-weight: 700;
+}
+.smalltxt, .forgot{
+    font-size: 14px!important;
+    font-weight: 400;
+    transition: 0.5s;
+}
+.forgot:hover{
+    color: #d257f7!important;
+}
+.link{
+    font-weight: 500;
+    color: #d257f7!important;
+}
+.link:disabled{
+    color: rgb(162, 162, 162)!important;
+}
