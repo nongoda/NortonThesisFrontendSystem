@@ -122,7 +122,7 @@
 
                 authStore.v.$reset()
 
-                router.push('/home')
+                router.push('/dashboard')
 
             } else {
                 resetError.value = res?.message || 'Reset failed'

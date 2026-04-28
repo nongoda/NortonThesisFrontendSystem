@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LandingView from '@/views/LandingView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
 import SendOTPView from '@/views/auth/forgotPassword/SendOTPView.vue'
 import VerifyOTPView from '@/views/auth/forgotPassword/VerifyOTPView.vue'
 import ResetPasswordView from '@/views/auth/forgotPassword/ResetPasswordView.vue'
-import HomeView from '@/views/HomeView.vue'
 import nprogress from 'nprogress'
+import DashboardView from '@/views/DashboardView.vue'
 import 'nprogress/nprogress.css'
 import { AuthStore } from '@/stores/AuthStore'
 import VerifyAccessView from '@/views/auth/VerifyAccessView.vue'
@@ -22,12 +20,6 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'landing',
-      component: LandingView,
-      meta: {title: 'Welcome', guestOnly: true}
-    },
-    {
-      path: '/login',
       name: 'login',
       component: LoginView,
       meta: {title: 'Login', guestOnly: true}
@@ -37,12 +29,6 @@ const router = createRouter({
       name: 'verify-access',
       component: VerifyAccessView,
       meta: {title: 'Verify Access', guestOnly: true, requiresOtp: true}
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: RegisterView,
-      meta: {title: 'Register', guestOnly: true}
     },
     {
       path: '/send-otp',
@@ -63,10 +49,10 @@ const router = createRouter({
       meta: {title: 'Reset Password', guestOnly: true, requiresForgotOtp: true}
     },
     {
-      path: '/home',
-      name: 'home',
-      component: HomeView,
-      meta: {title: 'Home'}
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView,
+      meta: {title: 'Dashboard'}
     },
   ],
 })

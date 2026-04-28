@@ -1,33 +1,17 @@
+
 .auth{
+    margin-block: 90px;
     .card{
         box-shadow: 0 0 15px 1px rgba(255, 255, 255, 0.06);
         border-radius: 20px;
-        background-color: #18181848;
+        background-color: #ffffff48;
         padding: 8vh 8vh;
         backdrop-filter: blur(5px);
-        border: 1px solid rgba(255, 255, 255, 0.077);
+        border: 2px solid rgb(232, 232, 232);
     }
     .card .desc{
         font-size: 15px!important;
-    }
-    .ogl-container {
-        width: 100%;
-        height: 100vh;
-        overflow: hidden;
-    }
-    .ogl{
-        width: 750px;
-        height: 750px;
-        right: -200px;
-        top: -250px!important;
-        z-index: -10;
-    }
-    .ogl-second{
-        width: 450px;
-        height: 450px;
-        left: -150px!important;
-        bottom: -100px!important;
-        z-index: -10;
+        font-weight: 350;
     }
     .or-line{
         width: 100%;
@@ -75,24 +59,14 @@
         margin-right: 5px;
     }
 }
+.auth.forgotPassword{
+    /* margin-block: 100px; */
+}
 .auth.forgotPassword, .auth.verify{
-    min-height: calc(100vh - 139px);
+    min-height: calc(100vh - 250px);
     flex: 1;
-    /* height: calc(100vh - 144.09px); */
-    .ogl-second{
-        width: 350px!important;
-        height: 350px!important;
-        left: -120px!important;
-        bottom: 200px!important;
-        z-index: -10;
-    }
-    .ogl{
-        width: 750px;
-        height: 750px;
-        right: -250px;
-        top: -300px!important;
-        z-index: -10;
-    }
+    margin-top: 120px;
+    
     form.OTP input{
         height: 60px!important;
         width: 60px!important;
@@ -127,9 +101,11 @@
         /* border: 1px solid rgba(255, 50, 50, 0.593)!important; */
     }
 }
-.authHeader{
+.auth{
     .btn.back, .btn.back .icon{
         transition: 0.5s;
+        color: #250230!important;
+        padding: 0!important;
     }
     .btn.back:hover, .btn.back:hover .icon{
         /* color: #e17eff!important;
@@ -138,7 +114,7 @@
     }
 }
 .subTitle{
-    color: white;
+    color: #330042!important;
     font-size: 26px;
     font-weight: 700;
 }
@@ -148,11 +124,11 @@
     transition: 0.5s;
 }
 .forgot:hover{
-    color: #d257f7!important;
+    color: #4e0365!important;
 }
 .link{
     font-weight: 500;
-    color: #d257f7!important;
+    color: #8e06b7!important;
 }
 .link:disabled{
     color: rgb(162, 162, 162)!important;

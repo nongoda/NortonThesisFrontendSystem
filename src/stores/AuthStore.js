@@ -2,7 +2,9 @@ import axios from "axios";
 import { defineStore } from "pinia";
 export const AuthStore = defineStore('AuthStore', {
     state: () => ({
-        registerErr: '',
+        user: null,
+        token: localStorage.getItem('auth_token') || '',
+        isReady: false,
         v: null,
         result: null,
         loginError: '',
@@ -12,16 +14,12 @@ export const AuthStore = defineStore('AuthStore', {
             phone: null,
             gender: '',
             avatar: "",
+            token: '',
+            device_fingerprint: ''
         },
         errorFields: {
             email: false,
             password: false
-        },
-        registerForm: {
-            name: '', 
-            email: '',
-            password: '',
-            password_confirmation: '',
         },
         loginForm: {
             email: '',
@@ -53,18 +51,9 @@ export const AuthStore = defineStore('AuthStore', {
             reset_token: ''
         },
         loginOTP: '',
-        registerOTP: '',
         token: localStorage.getItem('authToken') || '',
     }),
-    actions: {        
-        async register(){
-            try{
-                const res = await axios.post('auth/register', this.registerForm);
-                return res.data
-            }catch(error){
-                throw error
-            }
-        },
+    actions: {
         // =============================================
         // Session management
         saveLoginSession(res) {
@@ -72,36 +61,39 @@ export const AuthStore = defineStore('AuthStore', {
 
             const user = res.data.user
 
-            const session = {
-                name: user.name,
-                email: user.email,
-                avatar: user.avatar,
-                device_fingerprint: user.current_device?.device_fingerprint,
-                token: res.data.token
-            }
+            this.token = res.data.token
 
-            // save full session
-            this.user = session
-            this.token = session.token
-
-            // persist (refresh-safe)
-            localStorage.setItem('auth_user', JSON.stringify(session))
-            localStorage.setItem('auth_token', session.token)
+            localStorage.setItem('auth_token', this.token)
 
             return true
         },
-        loadSession() {
-            const user = localStorage.getItem('auth_user')
+        async fetchUser() {
+            try {
+                const res = await axios.get('/user', {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    }
+                })
+
+                this.user = res.data.data
+                return true
+
+            } catch (error) {
+                this.clearSession()
+                return false
+            }
+        },
+        async loadSession() {
             const token = localStorage.getItem('auth_token')
 
-            if (user && token) {
-                this.user = JSON.parse(user)
-                this.token = token
+            if (!token) return false
 
-                return true
-            }
+            this.token = token
 
-            return false
+            const ok = await this.fetchUser()
+            this.isReady = true
+
+            return ok
         },
         clearSession() {
             this.user = null
@@ -189,7 +181,7 @@ export const AuthStore = defineStore('AuthStore', {
         // =============================================
         async login(email, password){
             try{
-                const res = await axios.post('auth/login', {
+                const res = await axios.post('auth/logins', {
                     email,
                     password,
                 })
@@ -234,7 +226,7 @@ export const AuthStore = defineStore('AuthStore', {
         // ---------------------------------------------------
         async forgotPasswordSendPin(){
             try{
-                const res = await axios.post('auth/send-forgot-password-pin', {
+                const res = await axios.post('auth/send-forgots-password-pin', {
                     email: this.emailForgotpassword.email
                 })
 
@@ -257,7 +249,6 @@ export const AuthStore = defineStore('AuthStore', {
                     email: email
                 })
                 
-                // this.startOtpTimer(email)
                 if (res.data.result) {
                     this.startOtpTimer(email, res.data.data?.expires_at)
                 }

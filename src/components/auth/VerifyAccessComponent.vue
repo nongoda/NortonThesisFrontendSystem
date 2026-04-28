@@ -14,7 +14,7 @@
                         <span class="desc mt-2 d-flex align-items-center text-center justify-content-center">We’ve sent
                             a one-time code to
                             <ShinyText :text="maskEmail(email)" :speed="2" :delay="0.5" :disabled="false"
-                                :color="'#ffffff'" :shine-color="'#b5b5b5'" :spread="100" :direction="'left'"
+                                :color="'#110c17'" :shine-color="'#b5b5b5'" :spread="100" :direction="'left'"
                                 :yoyo="false" :pause-on-hover="false" class="fw-medium ps-1" />
                         </span>
                         <!-- <form class="mt-3 OTP"  @submit.prevent="() => { console.log('submit triggered'); verifyOtp() }"> -->
@@ -75,7 +75,6 @@
 <script setup>
 import Vue3OtpInput from 'vue3-otp-input';
 import Particles from '../elements/Particles.vue';
-// import { ref, onMounted, computed } from 'vue'
 import ShinyText from '../elements/ShinyText.vue';
 import { AuthStore } from '@/stores/AuthStore.js';
 import { ref, onMounted, computed, watch } from 'vue'
@@ -160,9 +159,13 @@ watch(otp, () => {
     otpError.value = false
     otpMessage.value = ''
 })
-
+const roleRedirect = {
+  admin: '/dashboard',     // admin → dashboard
+  manager: '/home',        // manager → home
+  staff: '/staff-page'     // staff → sample page
+}
 const verifyOtp = async () => {
-    // alert('hello')
+
     otpError.value = false
     otpMessage.value = ''
 
@@ -187,7 +190,10 @@ const verifyOtp = async () => {
         if (res?.result) {
             authStore.saveLoginSession(res)
             authStore.clearOtpTimer()
-            router.push('/home')
+
+            const role = res.data.user.role
+
+            router.push(roleRedirect[role] || '/')
         } else {
             otpError.value = true
             otpMessage.value = res?.message || 'Invalid OTP'

@@ -14,7 +14,7 @@
                         <span class="desc mt-1 d-flex align-items-center text-center justify-content-center">We’ve sent
                             a one-time code to
                             <ShinyText :text="maskEmail(email)" :speed="2" :delay="0.5" :disabled="false"
-                                :color="'#ffffff'" :shine-color="'#b5b5b5'" :spread="100" :direction="'left'"
+                                :color="'#110c17'" :shine-color="'#b5b5b5'" :spread="100" :direction="'left'"
                                 :yoyo="false" :pause-on-hover="false" class="fw-medium ps-1" />
                         </span>
                         <form class="mt-3 OTP">
@@ -39,12 +39,6 @@
                                 <span v-else class="smalltxt">
                                     Didn’t receive the code?
                                 </span>
-
-                                <!-- LINK BUTTON -->
-                                <!-- <button type="button" class="link bg-transparent text-decoration-underline ms-1"
-                                    style="font-size: 14px;" :disabled="resendTimer > 0" @click="resendOtp">
-                                    Click here to resend
-                                </button> -->
                                 <button type="button" class="link bg-transparent text-decoration-underline ms-1"
                                     style="font-size: 14px;" :disabled="resendTimer > 0 || resendBlocked"
                                     @click="resendOtp">
@@ -54,6 +48,11 @@
                             <button type="button" @click="verifyOtp"
                                 class="btn btn-offcial btn-color rounded-pill w-100">Verify</button>
                         </form>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <a href="#" class="text-decoration-none btn btn-offcial back" @click.prevent="$router.back()">
+                                <MoveLeft class="me-2 icon" /> Back to previous
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <!-- ================= -->
@@ -367,7 +366,7 @@ const resendOtp = async () => {
             otpError.value = true
             otpMessage.value = res?.message || 'Please wait before retrying.'
         } else {
-            otpMessage.value = 'OTP resent successfully'
+            // otpMessage.value = 'OTP resent successfully'
         }
 
     } catch (err) {
