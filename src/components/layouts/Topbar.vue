@@ -1,45 +1,127 @@
 <template>
   <header class="topbar">
-    <h1>{{ routeTitle }}</h1>
+    <span class="title-topbar">{{ routeTitle }}</span>
 
-    <div class="profile-group">
-      <img class="avatar" src="https://i.pinimg.com/1200x/d2/fd/e8/d2fde841ae080f87b5fab0e144da4281.jpg"
-        alt="profile" />
+    <div class="d-flex">
+      <router-link to="" class="link-page">
+        <Bell size="21" class="icon" />
+      </router-link>
+      <div class="profile-group">
+        <img class="avatar" :src="user?.avatar || 'https://via.placeholder.com/40'" alt="profile" />
+  
+        <div class="hover-bridge"></div>
+        <ul class="dropdown">
+          <li class="dropdown-item d-flex align-items-center name py-2 ps-1">
+            <img class="avatar" :src="user?.avatar || 'https://via.placeholder.com/40'">
+            <div class="d-flex flex-column ps-1">
+              <span class="name">{{ user.name }}</span>
+              <small>{{ user.email }}</small>
+            </div>
+          </li>
+          <li class="dropdown-item">
+            <router-link to="/" class="link-dashboard">
+              <Settings stroke-width="1.75" size="18" class="icon" />
+              Settings
+            </router-link>
+            <a class="link-dashboard" href="#" @click.prevent="openLogoutModal">
+              <LogOut stroke-width="1.75" size="18" class="icon" />
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
 
-      <div class="hover-bridge"></div>
-
-      <ul class="dropdown">
-        <li class="dropdown-item">
-          <img class="avatar" src="https://i.pinimg.com/1200x/d2/fd/e8/d2fde841ae080f87b5fab0e144da4281.jpg">
-          <div>
-
-          </div>
-        </li>
-        <li class="dropdown-item">
-          <router-link to="/" class="link-dashboard">
-            <Settings stroke-width="1.75" size="18" class="icon" />
-            Settings
-          </router-link>
-          <router-link to="/" class="link-dashboard">
-            <LogOut stroke-width="1.75" size="18" class="icon"/>
-            Logout
-          </router-link>  
-        </li>
-      </ul>
     </div>
   </header>
+
+      <div class="modal fade" tabindex="-1" ref="logoutModalEl">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-4 d-flex flex-column align-items-center justify-content-center">
+                    <div class="logo-wrap">
+                        <LogOut :stroke-width="2" size="35" class="i"/>
+                    </div>
+                    <h5 class="modal-title logout">Logout Confirmation</h5>
+                    <span class="ask">Are you sure you want to logout from your account?</span>
+                    <div class="d-flex w-100 mt-3">
+                        <button class="w-50 me-2 btn btn-offcial btn-color-cancel rounded-pill" @click="hideModal">
+                            Cancel
+                        </button>
+                        <button class="w-50 ms-2 btn btn-offcial btn-color-warning rounded-pill" @click="confirmLogout">
+                            Yes, log me out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { AuthStore } from '@/stores/AuthStore';
+import { CalendarDays } from 'lucide-vue-next';
+import * as bootstrap from 'bootstrap'
 const authStore = AuthStore();
 const route = useRoute()
+onMounted(async () => {
+  await authStore.getCurrentUser()
+})
+
+const routeTitle = computed(() => route.meta.title || 'No Title')
+const user = computed(() => authStore.user)
+const router = useRouter()
+
+
+
+const logoutModalEl = ref(null)
+let logoutModal = null
+
+onMounted(() => {
+    logoutModal = new bootstrap.Modal(logoutModalEl.value)
+})
+
+const openLogoutModal = () => {
+    logoutModal.show()
+}
+
+const hideModal = () => {
+    logoutModal.hide()
+}
+
+const confirmLogout = () => {
+    authStore.clearSession()
+    logoutModal.hide()
+    router.push('/login')
+}
+
+
 
 </script>
 
 <style scoped>
+.link-page:hover .icon{
+  stroke: #7e05a3!important;
+}
+.link-page:hover{
+  background-color: #e7e1e85f;
+}
+.link-page{
+  margin-right: 10px;
+  border-radius: 8px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.title-topbar {
+  font-weight: 500;
+  font-size: 18px;
+}
+
 .topbar {
   background: white;
   padding: 10px;
@@ -57,8 +139,8 @@ const route = useRoute()
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
 
   border-radius: 50%;
   object-fit: cover;
@@ -74,10 +156,11 @@ const route = useRoute()
 
 .hover-bridge {
   position: absolute;
-  top: 40px;
+  top: 35px;
   right: 0;
   width: 160px;
-  height: 15px;
+  height: 20px;
+  /* background: red; */
   background: transparent;
 }
 
@@ -104,8 +187,8 @@ const route = useRoute()
 
 .profile-group:hover .dropdown,
 .profile-group:hover .hover-bridge,
-.dropdown {
-/* .dropdown:hover { */
+/* .dropdown { */
+.dropdown:hover {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -115,28 +198,36 @@ const route = useRoute()
   padding: 0;
 }
 
-.dropdown .dropdown-item .link-dashboard{
-  display: block;        
-  width: 100%;           
-  padding: 10px;         
+.dropdown-item span.name {
+  font-weight: 450;
+  line-height: 12px;
+}
+
+.dropdown .dropdown-item .link-dashboard {
+  display: block;
+  width: 100%;
+  padding: 10px;
   text-decoration: none;
-  color: #373138!important;
+  color: #373138 !important;
   box-sizing: border-box;
-  border-radius: 10px!important;
-  font-weight: 450!important;
-  font-size: 15px!important;
-  transition: 0.5s!important;
+  border-radius: 10px !important;
+  font-weight: 450 !important;
+  font-size: 15px !important;
+  transition: 0.5s !important;
 }
-.dropdown .dropdown-item .link-dashboard:hover{
+
+.dropdown .dropdown-item .link-dashboard:hover {
   background-color: #e7e1e85f;
-  color: #7e05a3!important;
+  color: #7e05a3 !important;
 }
-.dropdown .dropdown-item .link-dashboard .icon{
+
+.dropdown .dropdown-item .link-dashboard .icon {
   stroke: #373138;
   margin-right: 7px;
-  transition: 0.5s!important;
+  transition: 0.5s !important;
 }
-.dropdown .dropdown-item .link-dashboard:hover .icon{
-  stroke: #7e05a3!important;
+
+.dropdown .dropdown-item .link-dashboard:hover .icon {
+  stroke: #7e05a3 !important;
 }
 </style>

@@ -1,111 +1,82 @@
 <template>
   <aside :class="['sidebar', { collapsed: isCollapsed }]">
-    <div class="sidebar-header w-100 d-flex justify-content-between align-self-center" style="height: 72.8px;">
-        <transition name="logo-anim" class="align-self-center">
+    <div class="sidebar-header w-100 d-flex justify-content-between align-items-center" style="height: 72.8px;">
+      <transition name="logo-anim" class="align-self-center">
         <img v-if="!isCollapsed" src="../../assets/images/LA CIMA CARTEL_light_mode.svg" class="logo" height="20"
-          alt="">
+          alt="" />
       </transition>
-      <button class="sidebar-toggle" @click="$emit('toggle')">☰</button>
+      <button class="sidebar-toggle" @click="$emit('toggle')"><PanelRight size="20" class="collapse-icon"/></button>
     </div>
 
     <ul class="menu">
+      <li v-for="group in menuGroups" :key="group.title" class="menu-group">
 
-      <li>
-        <router-link to="/dashboard" class="menu-link">
-          
-            <LayoutDashboard  class="icon" />
-          <span class="label">Dashboard</span>
-        </router-link>
+        <!-- Group Title -->
+        <transition name="group-title-anim">
+          <p v-if="!isCollapsed" class="group-title">
+            {{ group.title }}
+          </p>
+        </transition>
+
+        <!-- Items -->
+        <ul class="menu-inside">
+          <li v-for="item in group.items" :key="item.path">
+            <router-link :to="item.path" class="menu-link">
+              <component :is="item.icon" class="icon" />
+              <span class="label">{{ item.name }}</span>
+            </router-link>
+          </li>
+        </ul>
+
       </li>
-
-      <li>
-        <router-link to="/events" class="menu-link">        
-          <CalendarDays  class="icon"/>
-          <span class="label">Events</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/tickets" class="menu-link">
-            <Ticket   class="icon"/>
-          <span class="label">Tickets</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/orders" class="menu-link">
-          
-            <ShoppingCart  class="icon"/>
-          <span class="label">Orders</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/customers" class="menu-link">        
-            <Users  class="icon"/>
-          <span class="label">Customers</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/payments" class="menu-link">
-          
-            <CreditCard  class="icon"/>
-          
-          <span class="label">Payments</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/check-in" class="menu-link">
-          
-            <ScanLine  class="icon" />
-          <span class="label">Check-in</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/reports" class="menu-link">
-          
-            <BarChart3  class="icon"/>
-          <span class="label">Reports</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/promotions" class="menu-link">          
-          <Tag  class="icon" />
-          <span class="label">Promotions</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/user-management" class="menu-link">        
-            <UsersRound  class="icon" />
-          <span class="label">User Management</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/settings" class="menu-link">
-          
-            <Settings  class="icon" />
-          <span class="label">Settings</span>
-        </router-link>
-      </li>
-
     </ul>
   </aside>
 </template>
 
+
 <script setup>
-import { computed } from 'vue'
-import { AuthStore } from '@/stores/AuthStore'
-import { helpers } from '@vuelidate/validators';
+import { LayoutDashboard, CalendarDays, Ticket, ShoppingCart, Users, CreditCard, ScanLine, BarChart3, Tag, UsersRound, Settings } from 'lucide-vue-next'
 
 defineProps({
   isCollapsed: Boolean
 })
 
-
+const menuGroups = [
+  {
+    title: 'Main Menu',
+    items: [
+      { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    ]
+  },
+  {
+    title: 'Event Management',
+    items: [
+      { name: 'Events', path: '/events', icon: CalendarDays },
+      { name: 'Tickets', path: '/tickets', icon: Ticket },
+      { name: 'Orders', path: '/orders', icon: ShoppingCart },
+      { name: 'Check-in', path: '/check-in', icon: ScanLine },
+    ]
+  },
+  {
+    title: 'User Management',
+    items: [
+      { name: 'Customers', path: '/customers', icon: Users },
+      { name: 'User Management', path: '/user-management', icon: UsersRound },
+    ]
+  },
+  {
+    title: 'Finance & Reports',
+    items: [
+      { name: 'Payments', path: '/payments', icon: CreditCard },
+      { name: 'Reports', path: '/reports', icon: BarChart3 },
+      { name: 'Promotions', path: '/promotions', icon: Tag },
+    ]
+  },
+  {
+    title: 'System',
+    items: [
+      { name: 'Settings', path: '/setting-general', icon: Settings },
+    ]
+  }
+]
 </script>

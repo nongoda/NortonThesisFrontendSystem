@@ -7,6 +7,7 @@
 
       <div class="content">
         <router-view />
+        <GeneralSetting/>
       </div>
     </div>
   </div>
@@ -16,8 +17,7 @@
 import { ref } from 'vue'
 import SidebarAdmin from '@/components/layouts/SidebarAdmin.vue';
 import Topbar from '@/components/layouts/Topbar.vue'
-import { AuthStore } from '@/stores/AuthStore';
-
+import GeneralSetting from '@/components/settings/GeneralSetting.vue';
 const isCollapsed = ref(false)
 
 const toggleSidebar = () => {

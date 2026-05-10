@@ -7,8 +7,9 @@ import nprogress from 'nprogress'
 import DashboardView from '@/views/DashboardView.vue'
 import 'nprogress/nprogress.css'
 import { AuthStore } from '@/stores/AuthStore'
+import PasswordView from '@/views/settings/PasswordView.vue'
 import VerifyAccessView from '@/views/auth/VerifyAccessView.vue'
-
+import GeneralView from '@/views/settings/GeneralView.vue'
 nprogress.configure({
   showSpinner: false, 
   tickleSpeed: 500, minimum: 0.2
@@ -52,18 +53,31 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
-      meta: {title: 'Dashboard'}
+      meta: {title: 'Dashboard', roles: ['admin'] }
+    },
+    {
+      path: '/setting-general',
+      name: 'setting-general',
+      component: GeneralView,
+      meta: {title: 'Settings', roles: ['admin', 'manager', 'staff'] }
+    },
+    {
+      path: '/setting-password',
+      name: 'setting-password',
+      component: PasswordView,
+      meta: {title: 'Settings', roles: ['admin', 'manager', 'staff'] }
     },
   ],
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const authStore = AuthStore();
+  const user = await authStore.getCurrentUser()
 
   const loginVerifyProcess = localStorage.getItem('loginVerifyProcess') === 'true'
-  if (to.meta.requiresOtp && !loginVerifyProcess) {
-    return '/login'
-  }
+  // if (to.meta.requiresOtp && !loginVerifyProcess) {
+  //   return '/login'
+  // }
 
   const defaultTitle = 'La Cima Cartel'
   document.title = to.meta.title ? `${to.meta.title} | La Cima` : defaultTitle
@@ -81,8 +95,13 @@ router.beforeEach((to) => {
 
   if (to.meta.guestOnly && authStore.token) {
     alert('You are already logged in. Please logout first to access this page.');
-    const currentPath = router.currentRoute.value.fullPath || '/home';
-    return '/home'; 
+    return '/dashboard'; 
+  }
+
+  if (to.meta.roles && user) {
+    if (!to.meta.roles.includes(user.role)) {
+      return '/dashboard'
+    }
   }
 
   return true

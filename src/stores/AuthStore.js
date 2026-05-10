@@ -76,12 +76,23 @@ export const AuthStore = defineStore('AuthStore', {
                 })
 
                 this.user = res.data.data
+                
                 return true
 
             } catch (error) {
                 this.clearSession()
                 return false
             }
+        },
+        async getCurrentUser() {
+            if (!this.token) return null
+
+            if (!this.user) {
+                const ok = await this.fetchUser()
+                if (!ok) return null
+            }
+
+            return this.user
         },
         async loadSession() {
             const token = localStorage.getItem('auth_token')
@@ -99,7 +110,6 @@ export const AuthStore = defineStore('AuthStore', {
             this.user = null
             this.token = null
 
-            localStorage.removeItem('auth_user')
             localStorage.removeItem('auth_token')
         },
         // =============================================

@@ -16,7 +16,7 @@
       <li>
         <router-link to="/user-management" class="menu-link">
           <span class="icon">
-            <UsersRound :is="item.icon" size="18" />
+            <UsersRound :is="item.icon" size="18" stroke-width="2" />
           </span>
           <span class="label">User management</span>
         </router-link>

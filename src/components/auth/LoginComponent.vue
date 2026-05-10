@@ -140,19 +140,19 @@ const loginUser = async () => {
             authStore.loginForm.email,
             authStore.loginForm.password
         )
-        nprogress.done()
         if (!res.result) {
             authStore.errorFields.email = true
             authStore.errorFields.password = true
             nprogress.done()
             return
         }
-
+        
         localStorage.setItem('verify_token', res.data.verify_token)
         localStorage.setItem('loginVerifyProcess', 'true')
         
         await authStore.sendAccessPin(authStore.loginForm.email, 'email_verification',localStorage.getItem('verify_token'))
         router.push('/verify-access')
+        nprogress.done()
 
         authStore.loginForm.email = ''
         authStore.loginForm.password = ''

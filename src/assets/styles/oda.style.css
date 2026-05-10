@@ -133,3 +133,176 @@
 .link:disabled{
     color: rgb(162, 162, 162)!important;
 }
+/* ===================================== */
+/* Setting */
+.setting{
+    .pf img{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    .pf .name{
+        font-size: 18px;
+    }
+    .pf .email{
+        font-weight: 400!important;
+        font-size: 15px!important;
+    }
+    .pf .name .role{
+        font-weight: 400;
+        font-size: 14px; 
+        background-color: #4e0365;
+        padding: 3px 10px;
+        line-height: 10px!important;
+        color: white!important;
+    }
+}
+.setting .list-setting{
+    /* margin-top: 25px; */
+    li a:hover .icon{
+        stroke: #8e06b7;
+    }
+    li a:hover{
+        padding-left: 10px;
+        color: #8e06b7!important;
+    }
+    li a{
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        font-weight: 450;
+        text-decoration: none!important;
+        transition: 0.25s;
+    }
+    a.router-link-active .icon{
+        stroke: #8e06b7;
+    }
+    a.router-link-active{
+        padding-left: 10px;
+        color: #8e06b7!important;
+    }
+}
+.setting .general{
+    .avatar{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+    .avatar-btn{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        /* background-color: transparent; */
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .avatar-btn::after{
+        content: '';
+        border-radius: 50%;
+        position: absolute;
+        width: 110px;
+        height: 110px;
+        background: #8E06B7;
+        background: linear-gradient(90deg, rgba(142, 6, 183, 1) 0%, rgba(80, 6, 183, 1) 100%);  
+    }
+    .avatar-btn .icon-wrapper{
+        background: #8E06B7;
+        background: linear-gradient(90deg, rgba(142, 6, 183, 1) 0%, rgba(80, 6, 183, 1) 100%);
+        z-index: 5;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        border-radius: 50%;
+        justify-content: center;
+        background-color: #8e06b7;
+        transition: 0.24s;
+    }
+    /* .avatar-btn:hover .avatar {
+        filter: blur(4px);
+        transform: scale(1.05);
+    } */
+    .avatar-btn:hover .icon-wrapper{
+        opacity: 1;
+        background: linear-gradient(90deg, rgba(142, 6, 183, 0.3) 0%, rgba(80, 6, 183, 0.3) 100%);
+        z-index: 110;
+        width: 104px;
+        height: 104px;
+        display: flex;
+        align-items: center;
+        border-radius: 50%;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+
+        bottom: -2px!important;
+        right: -2px!important;
+    }
+    .avatar-btn .icon{
+        background-color: transparent;
+        stroke: white!important;
+        z-index: 4;
+        opacity: 1;
+    }
+    .title-part{
+        font-size: 17px;
+        font-weight: 540;
+    }
+    .short-desc{
+        font-weight: 400;
+    }
+}
+.setting .password{
+    .label-dropdown{
+        font-weight: 400;
+        font-size: 14px;
+    }
+    .dots .dot{
+        width: 6px;
+        height: 6px!important;
+        border-radius: 50%;
+        margin-right: 6px;
+        background-color: rgb(68, 68, 68);
+    }
+    .dots{
+        margin-block: 9px 10px;
+        display: flex;
+    }
+    .btn-dropwdown{
+        margin-top: 15px;
+        padding: 13px 20px;
+        border-radius: 16px;
+        background-color: transparent;
+        border: 1px solid #ddd!important;
+        transition: 0.25s;
+    }
+    .btn-dropwdown:hover{
+        background-color: #efefefc7;
+    }
+}
+/* ===================================== */
+/* .modal-content .logo-wrap{ */
+.modal-content .logo-wrap{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    /* background-color: #900707; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 5px solid #be0606; */
+}
+
+.modal-content .logo-wrap .i{
+    stroke: rgb(145, 5, 5)!important;
+    /* stroke: white!important; */
+}
+.modal-title.logout{
+    color: rgb(65, 37, 37)!important;
+}
+.modal-body span.ask{
+    font-weight: 400;
+    margin-block: 8px;
+}
