@@ -10,6 +10,10 @@ import { AuthStore } from '@/stores/AuthStore'
 import PasswordView from '@/views/settings/PasswordView.vue'
 import VerifyAccessView from '@/views/auth/VerifyAccessView.vue'
 import GeneralView from '@/views/settings/GeneralView.vue'
+import DashboardEventView from '@/views/events/DashboardEventView.vue'
+import HomePageView from '@/views/staff/HomePageView.vue'
+import PageNotFoundView from '@/views/PageNotFoundView.vue'
+import CreateEventView from '@/views/events/CreateEventView.vue'
 nprogress.configure({
   showSpinner: false, 
   tickleSpeed: 500, minimum: 0.2
@@ -67,17 +71,44 @@ const router = createRouter({
       component: PasswordView,
       meta: {title: 'Settings', roles: ['admin', 'manager', 'staff'] }
     },
+    {
+      path: '/events',
+      name: 'events',
+      component: DashboardEventView,
+      meta: {title: 'Events', roles: ['admin', 'manager'] }
+    },
+    {
+      path: '/home-page',
+      name: 'home-page',
+      component: HomePageView,
+      meta: {title: 'Events', roles: ['staff'] }
+    },
+    {
+      path: '/events/create',
+      name: 'create-event',
+      component: CreateEventView,
+      meta: {title: 'Create Event', roles: ['admin', 'manager'] }
+    },
+    {
+      path: '/404',
+      name: '404',
+      component: PageNotFoundView,
+      meta: { title: '404 Not Found' }
+    },
+
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/404'
+    }
   ],
 })
 
 router.beforeEach(async (to) => {
   const authStore = AuthStore();
   const user = await authStore.getCurrentUser()
+  
 
   const loginVerifyProcess = localStorage.getItem('loginVerifyProcess') === 'true'
-  // if (to.meta.requiresOtp && !loginVerifyProcess) {
-  //   return '/login'
-  // }
 
   const defaultTitle = 'La Cima Cartel'
   document.title = to.meta.title ? `${to.meta.title} | La Cima` : defaultTitle
@@ -99,8 +130,10 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.roles && user) {
-    if (!to.meta.roles.includes(user.role)) {
-      return '/dashboard'
+    const role = user.role?.toLowerCase()
+
+    if (!to.meta.roles.includes(role)) {
+      return '/404'
     }
   }
 

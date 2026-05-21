@@ -5,13 +5,14 @@
         <img v-if="!isCollapsed" src="../../assets/images/LA CIMA CARTEL_light_mode.svg" class="logo" height="20"
           alt="" />
       </transition>
-      <button class="sidebar-toggle" @click="$emit('toggle')"><PanelRight size="20" class="collapse-icon"/></button>
+      <button class="sidebar-toggle" @click="$emit('toggle')">
+        <PanelRight size="20" class="collapse-icon" />
+      </button>
     </div>
 
     <ul class="menu">
-      <li v-for="group in menuGroups" :key="group.title" class="menu-group">
+      <li v-for="group in filteredMenuGroups" :key="group.title" class="menu-group">
 
-        <!-- Group Title -->
         <transition name="group-title-anim">
           <p v-if="!isCollapsed" class="group-title">
             {{ group.title }}
@@ -33,50 +34,164 @@
   </aside>
 </template>
 
-
 <script setup>
-import { LayoutDashboard, CalendarDays, Ticket, ShoppingCart, Users, CreditCard, ScanLine, BarChart3, Tag, UsersRound, Settings } from 'lucide-vue-next'
+import {
+  LayoutDashboard,
+  CalendarDays,
+  Ticket,
+  Users,
+  CreditCard,
+  ScanLine,
+  BarChart3,
+  Tag,
+  UsersRound,
+  Settings,
+} from 'lucide-vue-next'
+
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { AuthStore } from '@/stores/AuthStore'
 
 defineProps({
   isCollapsed: Boolean
 })
 
+/*
+|--------------------------------------------------------------------------
+| Auth Store
+|--------------------------------------------------------------------------
+*/
+
+const authStore = AuthStore()
+
+const { user } = storeToRefs(authStore)
+
+/*
+|--------------------------------------------------------------------------
+| Current User Role
+|--------------------------------------------------------------------------
+*/
+
+const userRole = computed(() => user.value?.role || '')
+console.log(userRole.value)
+/*
+|--------------------------------------------------------------------------
+| Menu
+|--------------------------------------------------------------------------
+*/
+
 const menuGroups = [
   {
     title: 'Main Menu',
     items: [
-      { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+      {
+        name: 'Dashboard',
+        path: '/dashboard',
+        icon: LayoutDashboard,
+        roles: ['admin', 'manager']
+      },
+      {
+        name: 'Dashboard',
+        path: '/home-page',
+        icon: LayoutDashboard,
+        roles: ['staff']
+      },
     ]
   },
+
   {
     title: 'Event Management',
     items: [
-      { name: 'Events', path: '/events', icon: CalendarDays },
-      { name: 'Tickets', path: '/tickets', icon: Ticket },
-      { name: 'Orders', path: '/orders', icon: ShoppingCart },
-      { name: 'Check-in', path: '/check-in', icon: ScanLine },
+      {
+        name: 'Events',
+        path: '/events',
+        icon: CalendarDays,
+        roles: ['admin', 'manager']
+      },
+      {
+        name: 'Tickets',
+        path: '/tickets',
+        icon: Ticket,
+        roles: ['admin', 'manager']
+      },
+      {
+        name: 'Check-in',
+        path: '/check-in',
+        icon: ScanLine,
+        roles: ['admin', 'staff']
+      },
     ]
   },
+
   {
     title: 'User Management',
     items: [
-      { name: 'Customers', path: '/customers', icon: Users },
-      { name: 'User Management', path: '/user-management', icon: UsersRound },
+      {
+        name: 'Customers',
+        path: '/customers',
+        icon: Users,
+        roles: ['admin']
+      },
+      {
+        name: 'User Management',
+        path: '/user-management',
+        icon: UsersRound,
+        roles: ['admin']
+      },
     ]
   },
+
   {
     title: 'Finance & Reports',
     items: [
-      { name: 'Payments', path: '/payments', icon: CreditCard },
-      { name: 'Reports', path: '/reports', icon: BarChart3 },
-      { name: 'Promotions', path: '/promotions', icon: Tag },
+      {
+        name: 'Payments',
+        path: '/payments',
+        icon: CreditCard,
+        roles: ['admin']
+      },
+      {
+        name: 'Reports',
+        path: '/reports',
+        icon: BarChart3,
+        roles: ['admin', 'manager']
+      },
+      {
+        name: 'Promotions',
+        path: '/promotions',
+        icon: Tag,
+        roles: ['admin', 'manager']
+      },
     ]
   },
+
   {
     title: 'System',
     items: [
-      { name: 'Settings', path: '/setting-general', icon: Settings },
+      {
+        name: 'Settings',
+        path: '/setting-general',
+        icon: Settings,
+        roles: ['admin', 'manager', 'staff']
+      },
     ]
   }
 ]
+
+/*
+|--------------------------------------------------------------------------
+| Filter Menu By Current User Role
+|--------------------------------------------------------------------------
+*/
+
+const filteredMenuGroups = computed(() => {
+  return menuGroups
+    .map(group => ({
+      ...group,
+      items: group.items.filter(item =>
+        item.roles.includes(userRole.value)
+      )
+    }))
+    .filter(group => group.items.length > 0)
+})
 </script>

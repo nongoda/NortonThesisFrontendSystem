@@ -2,12 +2,19 @@
 import ToastService from 'primevue/toastservice'
 import Aura from '@primeuix/themes/aura' 
 import PrimeVue from 'primevue/config'
-
+import '../node_modules/animate.css'
 import './assets/styles/main.css'
 import './assets/styles/oda.style.css'
 
-import '../node_modules/animate.css'
 
+// ======================================
+import jquery from 'jquery'
+
+window.$ = window.jQuery = jquery
+
+import 'fomantic-ui-css/semantic.min.css'
+await import('fomantic-ui-css/semantic.min.js')
+// ======================================
 
 
 import { createApp } from 'vue'

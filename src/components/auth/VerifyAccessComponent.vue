@@ -162,7 +162,7 @@ watch(otp, () => {
 const roleRedirect = {
   admin: '/dashboard',     // admin → dashboard
   manager: '/home',        // manager → home
-  staff: '/staff-page'     // staff → sample page
+  staff: '/home-page'     // staff → sample page
 }
 const verifyOtp = async () => {
 

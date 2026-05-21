@@ -65,7 +65,7 @@
                             <RouterLink to="send-otp" class="text-decoration-none forgot text-end text-end">Forgot
                                 password?</RouterLink>
                         </div>
-                        <button type="submit" class="btn-offcial btn-color w-100 mb-3 mt-4">Login now</button>
+                        <button type="submit" class="btn-offcial btn-color w-100 mt-4">Login now</button>
                     </form>
                     
                 </div>

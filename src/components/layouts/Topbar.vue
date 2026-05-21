@@ -153,15 +153,17 @@ const confirmLogout = () => {
 .profile-group:hover .avatar {
   transform: scale(1.05);
 }
-
+.profile-group:hover .hover-bridge{
+  opacity: 1!important;
+}
 .hover-bridge {
   position: absolute;
   top: 35px;
   right: 0;
   width: 160px;
   height: 20px;
-  /* background: red; */
   background: transparent;
+  opacity: 0!important;
 }
 
 .dropdown {
@@ -185,10 +187,19 @@ const confirmLogout = () => {
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.profile-group:hover .dropdown,
+/* .profile-group:hover .dropdown,
 .profile-group:hover .hover-bridge,
-/* .dropdown { */
 .dropdown:hover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+} */
+
+.profile-group:hover .hover-bridge {
+  opacity: 1 !important;
+}
+
+.profile-group:hover .dropdown {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
