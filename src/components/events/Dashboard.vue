@@ -79,7 +79,7 @@
                     <div class="title-table">Event Records</div>
                     <span class="small-detail">Quick overview of all event activities</span>
                 </div>
-                <router-link to="/events/create" class="btn btn-offcial btn-color">
+                <router-link to="/events/create" class="btn btn-official btn-color">
                     <CircleFadingPlus :size="20" :stroke-width="1.75" style="stroke: white; margin-right: 7px;" />
                     Create event
                 </router-link>
@@ -123,7 +123,6 @@
                 </div>
                 <div class="d-flex flex-column">
                     <div class="d-flex w-100 align-items-center justify-content-start">
-
                         <form @submit.prevent="searchEvent" style="width: 300px">
                             <div class="input-form-search">
                                 <Search :size="20" :stroke-width="1.75" class="position-absolute" />
@@ -136,8 +135,7 @@
                             <input type="hidden">
 
                             <div class="wrapper d-flex align-items-center" style="padding: 10px 14px;">
-                                <SlidersHorizontal :size="16" :stroke-width="1.75" style="margin-right: 5px;" />
-
+                                <ListFilter :size="16" :stroke-width="1.75" style="margin-right: 5px;" />
                                 <span>{{ sortDisplay }}</span>
                                 <X v-if="sortBy" :size="16" class="ms-2 cursor-pointer" @click.stop="clearSort" />
                             </div>
@@ -154,7 +152,7 @@
                             <input type="hidden">
                             <div class="wrapper d-flex align-items-center" style="padding: 10px 14px;">
                                 <ArrowUpDown :size="16" :stroke-width="1.75" style="margin-right: 5px;" />
-                                {{ sort.toUpperCase() }}
+                                {{ sort ? sort.charAt(0).toUpperCase() + sort.slice(1) : 'Sort order'  }}
                             </div>
                             <div class="menu filter">
                                 <div class="item" data-value="asc">Ascending</div>
@@ -228,11 +226,13 @@
                                             </div>
 
                                             <div class="menu">
-                                                <div class="item">
-                                                    Update information
+                                                <div class="item" @click="goToEvent('preview-event', event.slug)">
+                                                    View event detail
                                                 </div>
-
-                                                <div class="item">
+                                                <div class="item" @click="goToEvent('update-event', event.slug)">
+                                                    Update event
+                                                </div>
+                                                <div class="item" @click="confirmDeleteEvent(event)">
                                                     Move to trash
                                                 </div>
                                             </div>
@@ -268,7 +268,6 @@
 
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -293,7 +292,7 @@
                                             {{ event.views }}
                                         </div>
                                     </div>
-                                    <div class="ui dropdown setting-dropdown">
+                                    <div class="ui dropdown setting-dropdown" :key="`dd-${event.id}`">
                                         <input type="hidden">
                                         <div class="wrapper d-flex align-items-center">
                                             <Ellipsis :size="20" :stroke-width="1.75" />
@@ -380,8 +379,38 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="deleteEventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content form-input" style="padding: 30px;">
 
+                <div class="d-flex flex-column align-items-center justify-content-center text-center">
+                    <div class="wrapper-i">
+                        <Trash2 :size="30" color="rgb(87, 6, 6)" />
+                    </div>
 
+                    <h5 class="modal-title warn mb-1">Confirm Delete Event</h5>
+
+                    <span class="sm-detail">
+                        Are you sure you want to move this event to trash?<br>
+                        This action cannot be undone.
+                    </span>
+                </div>
+
+                <div class="d-flex w-100 mt-4">
+                    <button type="button" class="w-50 me-2 btn btn-official btn-color-cancel rounded-pill"
+                        data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="button" class="w-50 ms-2 btn btn-official btn-color-warning rounded-pill"
+                        @click="deleteEvent">
+                        Delete
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -394,13 +423,15 @@ import {
     ClockFading,
     History
 } from 'lucide-vue-next';
+import {Modal} from 'bootstrap'
+import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
 const route = useRoute()
 const router = useRouter()
 const sortBy = ref(route.query.sort_by || null)
 const sort = ref(route.query.sort || 'desc')
 const eventStore = EventStore();
-
 const sortLabels = {
     title: 'Title',
     start_date: 'Start date',
@@ -424,27 +455,16 @@ const clearSort = () => {
         }
     })
 }
-// const initDropdowns = async () => {
-//     await nextTick()
-//     $('.ui.dropdown').dropdown({
-//         onChange(value) {
-//             sortBy.value = value
-
-//             router.push({
-//                 query: {
-//                     ...route.query,
-//                     sort_by: value,
-//                     page: 1
-//                 }
-//             })
-//         }
-//     })
-// }
 
 const initDropdowns = async () => {
     await nextTick()
 
-    // SORT FIELD dropdown only
+    // destroy (safe reset)
+    $('.ui.dropdown.sort-field').dropdown('destroy')
+    $('.ui.dropdown.sort-direction').dropdown('destroy')
+    $('.ui.dropdown.setting-dropdown').dropdown('destroy')
+
+    // SORT FIELD
     $('.ui.dropdown.sort-field').dropdown({
         onChange(value) {
             sortBy.value = value === 'id' ? null : value
@@ -459,7 +479,7 @@ const initDropdowns = async () => {
         }
     })
 
-    // SORT DIRECTION dropdown only
+    // SORT DIRECTION
     $('.ui.dropdown.sort-direction').dropdown({
         onChange(value) {
             sort.value = value
@@ -473,11 +493,18 @@ const initDropdowns = async () => {
             })
         }
     })
+
+    // ⭐ ADD THIS (IMPORTANT)
+    $('.ui.dropdown.setting-dropdown').dropdown({
+        on: 'click' // optional but makes it more reliable for icon menus
+    })
 }
 
 const search = ref(route.query.search || '')
 const currentPage = ref(Number(route.query.page) || 1)
 const currentStatus = ref(route.query.status || '')
+const selectedDeleteEventId = ref(null)
+const selectedDeleteEventSlug = ref(null)
 
 const summary = ref({
     total: {
@@ -497,11 +524,14 @@ const summary = ref({
 onMounted(async () => {
     window.$ = window.jQuery = $
     await import('fomantic-ui-css/semantic.min.js')
+    await nextTick()
+    await initDropdowns()
+
     try {
         const token = localStorage.getItem('auth_token')
         const res = await eventStore.getData(token)
         summary.value = res.data
-        // await fetchEvents()
+        
     } catch (error) {
         console.log(error)
     }
@@ -564,11 +594,6 @@ const setStatus = async (status) => {
 
 }
 
-
-document.querySelectorAll('.ui.dropdown').forEach(el => {
-    $(el).dropdown()
-})
-
 const formatStatus = (status) => {
     if (!status) return ''
     return status.charAt(0).toUpperCase() + status.slice(1)
@@ -621,21 +646,73 @@ const changePage = async (page) => {
 
 }
 
-// watch(
-//     () => route.query,
-//     async (query) => {
+const goToEvent = (routeName, slug) => {
+    $('.ui.dropdown.setting-dropdown').dropdown('hide')
+    router.push({
+        name: routeName,
+        params: { slug }
+    })
+}
+//====================================================
+const confirmDeleteEvent = (eventItem) => {
 
-//         currentPage.value = Number(query.page) || 1
-//         currentStatus.value = query.status || ''
-//         search.value = query.search || ''
+    if (eventItem?.status === 'published') {
+        toast.add({
+            severity: 'error',
+            summary: 'Not allowed',
+            detail: 'You cannot delete a published event',
+            life: 3000
+        })
+        return
+    }
 
-//         sortBy.value = query.sort_by || 'id'
-//         sort.value = query.sort || 'desc'
+    selectedDeleteEventId.value = eventItem.id
+    selectedDeleteEventSlug.value = eventItem.slug
 
-//         await fetchEvents()
-//     },
-//     { immediate: true }
-// )
+    const modal = new Modal(document.getElementById('deleteEventModal'))
+    modal.show()
+}
+
+const deleteEvent = async () => {
+    try {
+        const token = localStorage.getItem('auth_token')
+
+        await eventStore.deleteEvent(
+            selectedDeleteEventId.value,
+            token
+        )
+
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Event deleted successfully',
+            life: 3000
+        })
+
+        // refresh list
+        await fetchEvents()
+
+        const modalEl = document.getElementById('deleteEventModal')
+        const modal = Modal.getInstance(modalEl)
+        modal.hide()
+
+    } catch (error) {
+        const message =
+            error?.response?.data?.message ||
+            'Failed to delete event'
+
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    } finally {
+        selectedDeleteEventId.value = null
+        selectedDeleteEventSlug.value = null
+    }
+}
+//====================================================
 watch(
     () => route.query,
     async (query) => {
@@ -645,12 +722,13 @@ watch(
 
         sortBy.value = query.sort_by || null
         sort.value = query.sort || 'desc'
-        // sortBy.value = query.sort_by || null
-        // sort.value = query.sort || 'desc'
 
         await fetchEvents()
+        await initDropdowns()
     },
     { immediate: true }
 )
+
+
 
 </script>

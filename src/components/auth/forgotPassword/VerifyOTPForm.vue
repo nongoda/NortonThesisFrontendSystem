@@ -46,10 +46,10 @@
                                 </button>
                             </div>
                             <button type="button" @click="verifyOtp"
-                                class="btn btn-offcial btn-color rounded-pill w-100">Verify</button>
+                                class="btn btn-official btn-color rounded-pill w-100">Verify</button>
                         </form>
                         <div class="d-flex align-items-center justify-content-center">
-                            <a href="#" class="text-decoration-none btn btn-offcial back" @click.prevent="$router.back()">
+                            <a href="#" class="text-decoration-none btn btn-official back" @click.prevent="$router.back()">
                                 <MoveLeft class="me-2 icon" /> Back to previous
                             </a>
                         </div>

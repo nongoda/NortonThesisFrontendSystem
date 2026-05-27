@@ -27,10 +27,10 @@
                             <input type="text" class="form-control" placeholder="Type your email here" v-model="authStore.emailForgotpassword.email" :class="{'form-control-err' : authStore.v.email.$error}">
                             <span class="warning-msg-input" v-for="err in authStore.v.email.$errors">{{ err.$message }}</span>
                         </div>
-                        <button type="submit" class="btn-offcial btn-color w-100 mb-3 mt-4">Send OTP</button>
+                        <button type="submit" class="btn-official btn-color w-100 mb-3 mt-4">Send OTP</button>
                     </form>
                     <div class="d-flex align-items-center justify-content-center">
-                        <a href="#" class="text-decoration-none btn btn-offcial back text-black" @click.prevent="$router.back()">
+                        <a href="#" class="text-decoration-none btn btn-official back text-black" @click.prevent="$router.back()">
                             <MoveLeft class="me-2 icon" /> Back to previous page
                         </a>
                     </div>

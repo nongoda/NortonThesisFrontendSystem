@@ -121,13 +121,13 @@
 
                     <!-- ACTION BUTTONS -->
                     <div class="d-flex mt-3">
-                        <button type="button" class="btn btn-offcial btn-color-cancel rounded-pill me-2"
+                        <button type="button" class="btn btn-official btn-color-cancel rounded-pill me-2"
                             @click="resetPasswordForm">
                             <!-- @click="showPasswordForm = false"> -->
                             Cancel
                         </button>
 
-                        <button class="btn btn-offcial btn-color rounded-pill" type="submit">
+                        <button class="btn btn-official btn-color rounded-pill" type="submit">
                             Update password
                         </button>
                     </div>

@@ -6,8 +6,7 @@
       <Topbar />
 
       <div class="content">
-        <router-view />
-        <Dashboard />
+        <TicketEvent />
       </div>
     </div>
   </div>
@@ -17,7 +16,8 @@
 import { ref } from 'vue'
 import SidebarAdmin from '@/components/layouts/Sidebar.vue';
 import Topbar from '@/components/layouts/Topbar.vue'
-import Dashboard from '@/components/events/Dashboard.vue';
+import TicketEvent from '@/components/events/TicketEvent.vue';
+
 const isCollapsed = ref(false)
 
 const toggleSidebar = () => {

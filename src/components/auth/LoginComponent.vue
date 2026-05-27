@@ -65,7 +65,7 @@
                             <RouterLink to="send-otp" class="text-decoration-none forgot text-end text-end">Forgot
                                 password?</RouterLink>
                         </div>
-                        <button type="submit" class="btn-offcial btn-color w-100 mt-4">Login now</button>
+                        <button type="submit" class="btn-official btn-color w-100 mt-4">Login now</button>
                     </form>
                     
                 </div>
@@ -109,11 +109,13 @@ import Particles from '../elements/Particles.vue';
 import { onMounted, onUnmounted, watch, useTemplateRef, ref, computed } from 'vue';
 import nprogress from 'nprogress';
 import { AuthStore } from '@/stores/AuthStore.js';
-const showPassword = ref(false)
 import { required, email, maxLength, helpers } from '@vuelidate/validators';
+const showPassword = ref(false)
 const router = useRouter()
 const authStore = AuthStore();
-
+// computed(() => {
+//     authStore.clearOtpTimer();
+// })
 // =====================================================
 const passwordComplexity = helpers.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).{8,}$/)
 const rules = {
@@ -160,7 +162,6 @@ const loginUser = async () => {
 
     } catch (error) {
         nprogress.done()
-        // console.error(error.response?.data || error.message)
     } finally {
     }
 }

@@ -14,7 +14,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import SidebarAdmin from '@/components/layouts/SidebarAdmin.vue';
+import SidebarAdmin from '@/components/layouts/Sidebar.vue';
 import Topbar from '@/components/layouts/Topbar.vue'
 const isCollapsed = ref(false)
 

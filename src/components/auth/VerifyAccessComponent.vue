@@ -53,7 +53,7 @@
                                 </button>
                             </div>
                             <button type="button" @click="verifyOtp"
-                                class="btn btn-offcial btn-color rounded-pill w-100">Verify</button>
+                                class="btn btn-official btn-color rounded-pill w-100">Verify</button>
                         </form>
                     </div>
                 </div>

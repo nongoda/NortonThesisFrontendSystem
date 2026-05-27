@@ -19,7 +19,7 @@
                             <input type="text" class="form-control" placeholder="Type confirmation password" v-model="authStore.resetPasswordForm.password_confirmation" :class="{'form-control-err' : authStore.v.password_confirmation.$error}">
                             <span class="warning-msg-input" v-if="authStore.v.password_confirmation.$error">{{ authStore.v.password_confirmation.$errors[0].$message }}</span>
                         </div>
-                        <button type="submit" class="btn-offcial btn-color w-100 mb-3 mt-4">Reset password</button>
+                        <button type="submit" class="btn-official btn-color w-100 mb-3 mt-4">Reset password</button>
                     </form>
                     <!-- <div class="m-auto">
                         <span class="smalltxt">Don’t have an account yet? </span>

@@ -42,10 +42,10 @@
                     <h5 class="modal-title logout">Logout Confirmation</h5>
                     <span class="ask">Are you sure you want to logout from your account?</span>
                     <div class="d-flex w-100 mt-3">
-                        <button class="w-50 me-2 btn btn-offcial btn-color-cancel rounded-pill" @click="hideModal">
+                        <button class="w-50 me-2 btn btn-official btn-color-cancel rounded-pill" @click="hideModal">
                             Cancel
                         </button>
-                        <button class="w-50 ms-2 btn btn-offcial btn-color-warning rounded-pill" @click="confirmLogout">
+                        <button class="w-50 ms-2 btn btn-official btn-color-warning rounded-pill" @click="confirmLogout">
                             Yes, log me out
                         </button>
                     </div>

@@ -91,11 +91,30 @@ main{
 button{
     border: 0!important;
 }
-.btn.rounded-pill, .btn-offcial.rounded-pill{
+.btn.btn-outline:hover{
+    background-color: rgba(208, 208, 208, 0.203)!important;
+    color: #221427!important;
+}
+.btn.btn-outline.small-btn{
+    padding: 5px 15px!important;
+    font-size: 14px!important;
+    .lucide{
+        width: 15px!important;
+        height: 15px!important;
+    }
+}
+.btn.btn-outline{
+    color: #1b131eb6!important;
+    border: 1.5px solid rgba(27, 19, 30, 0.211)!important;
+    .lucide{
+        margin-right: 5px;
+    }
+}
+.btn.rounded-pill, .btn-official.rounded-pill{
     border-radius: 11px!important;
 
 }
-.btn, .btn-offcial{
+.btn, .btn-official{
     border-radius: 11px!important;
     text-decoration: none;
     color: white!important;
@@ -107,34 +126,34 @@ button{
     font-weight: 450!important;
     transition: 0.5s!important;
 }
-.btn-offcial.btn-color-cancel:hover{
+.btn-official.btn-color-cancel:hover{
     background-color: #cdcad1!important;
     box-shadow: 0 0 55px 5px #d8d5d9ab!important;
 }
-.btn-offcial.btn-color-cancel{
+.btn-official.btn-color-cancel{
     color: rgb(93, 93, 93)!important;
     background-color: #e0dde4!important;
 }
-.btn-offcial.btn-color-warning:hover{
+.btn-official.btn-color-warning:hover{
     box-shadow: 0 0 55px 5px #ab6e6eab!important;
     background-color: rgb(119, 5, 5);
 }
-.btn-offcial.btn-color-warning{
+.btn-official.btn-color-warning{
     background-color: rgb(144, 7, 7);
 }
-.btn-offcial.btn-color{
+.btn-official.btn-color{
     background: linear-gradient(90deg, #6F00FF 0%, #A500D9 100%);
 }
-.btn-offcial.btn-color:hover{
+.btn-official.btn-color:hover{
     box-shadow: 0 0 55px 5px #c300ff5f;
 }
-.btn-offcial.btn-no-color{
+.btn-official.btn-no-color{
     position: relative;
     background-color: #ffffff20;
     background-clip: padding-box;
     border: 1px solid rgba(255, 255, 255, 0.334)!important;
 }
-.btn-offcial.btn-no-color:hover{
+.btn-official.btn-no-color:hover{
     background-color: #ffffff38;
     box-shadow: 0 0 55px 5px #ffffff2f;
 }
@@ -351,19 +370,10 @@ button{
 }
 /* ============================================================*/
 /* Input Style */
-/* textarea.form-control {
-    display: block !important;
-    height: 100px !important;
-    overflow-y: auto;
-    resize: vertical;
-    line-height: 1.5;
-    padding: 12px;
-} */
- .auto-resize {
-    overflow: hidden;
-    resize: none;
-    min-height: 100px;
+textarea.form-control{
+    line-height: 20px!important;
 }
+
 input, .form-control{
     line-height: 0!important;
     font-size: 15px!important;
@@ -403,7 +413,15 @@ label.normal{
     font-size: 14px!important;
     font-weight: 400;
 }
-.form-control-err{
+.ui.dropdown.form-control-err .text{
+    color: rgb(40, 1, 1)!important;
+}
+.ui.dropdown.form-control-err .wrapper{
+    border: none!important;
+}
+.form-control-err, 
+.ui.dropdown.form-control-err{
+    border-radius: 10px!important;
     border: 1.5px solid rgb(209, 14, 14)!important;
     background-color: rgba(255, 0, 0, 0.081)!important;
 }
@@ -511,8 +529,30 @@ button:disabled {
 .p-toast-message, .p-toast-message-content{
     border-radius: 18px!important;
 }
+.p-icon{
+    width: 20px!important;
+    height: 20px!important;
+    overflow: visible!important;
+    font-size: 50px!important;
+    stroke: 1.2px!important;
+    border: none;
+}
+.p-toast-message-error{
+    background: rgba(255, 201, 199, 0.851)!important;
+    .p-toast-message-content .p-toast-message-icon{
+        stroke: rgb(216, 2, 2)!important;
+        color: transparent!important;
+        outline: none!important;
+        stroke: 1px!important;
+    }
+}
+
+:deep(.p-toast-message-error .p-toast-message-icon) {
+    color: #ef4444;
+}
 .p-toast .p-toast-summary{
     font-weight: 550;
+    font-size: 16px!important;
 }
 .p-toast-message-text{
     gap: 0!important;
@@ -530,11 +570,24 @@ button:disabled {
 .p-toast-message-content{
     padding: 15px!important;
     gap: 15px!important;
+
 }
 .p-toast-message-content .p-toast-message-icon{
     stroke: #13b64e!important;
     color: #0b7934;
 }
 .p-toast-detail{
+    font-size: 14px!important;
     font-weight: 400!important;
+}
+a.back-page{
+    font-weight: 450;
+    font-size: 15px;
+    text-decoration: none;
+}
+a.back-page:hover{
+    color: #7e05a3!important;
+}
+a.back-page:hover .lucide{
+    stroke: #7e05a3!important;
 }

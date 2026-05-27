@@ -24,47 +24,6 @@ export const EventStore = defineStore('EventStore', {
             });
             return res.data;
         },
-        // async getAllEvent(token) {
-        //     this.loading = true;
-
-        //     try {
-        //         const params = {
-        //             search: this.filters.search || undefined,
-        //             status: this.filters.status || undefined,
-        //             sort_by: this.filters.sort_by,
-        //             sort: this.filters.sort,
-        //             per_page: this.filters.per_page,
-        //             page: this.filters.page,
-        //         };
-
-        //         const res = await axios.get("/events", {
-        //             params,
-        //             headers: {
-        //                 Authorization: `Bearer ${token}`,
-        //             },
-        //         });
-
-        //         this.events = res.data.data.data;
-        //         this.meta = res.data.data.meta;
-
-        //         return res.data;
-        //     } finally {
-        //         this.loading = false;
-        //     }
-        // },
-        // async getAllEvent(token, search, status, sort_by, sort, per_page, page) {
-        //     const res = await axios.get(
-        //         `/events?search=${search}&status=${status}&sort_by=${sort_by}&sort=${sort}&per_page=${per_page}&page=${page}`,
-        //         {
-        //             headers: {
-        //                 Authorization: `Bearer ${token}`
-        //             }
-        //         }
-        //     );
-
-        //     this.events = res.data.data; // 👈 important (because paginated)
-        //     return res.data;
-        // }
         async getAllEvent(
             token,
             search = '',
@@ -109,7 +68,167 @@ export const EventStore = defineStore('EventStore', {
 
                 this.loading = false;
             }
+        },
+        async getAllCategories(){
+            const res = await axios.get('/categories');
+            return res.data;
+        },
+        async getAllArtists(){
+            const res = await axios.get('/artists');
+            return res.data;
+        },
+        async getEventBySlug(token, slug){
+            const res = await axios.get(`/events/slug/${slug}`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        });
+            return res.data;
+        },
+        async createEvent(token, payload) {
+            try {
+                const res = await axios.post('/events', payload, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                return res.data;
+
+            } catch (error) {
+                throw error.response?.data || error;
+            }
+        },
+        async updateEvent(token, payload, id) {
+            try {
+                // payload.append('_method', 'PUT') 
+                const res = await axios.post(`/events/update/${id}`, payload, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                return res.data;
+            } catch (error) {
+                throw error.response?.data || error;
+            }
+        },
+        async updateStatus(id, token, status) {
+            try {
+                const res = await axios.post(
+                    `/events/update-status/${id}`,
+                    { status },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                return res.data;
+            } catch (error) {
+                throw error; // ✅ let component handle it
+            }
+        },
+        async createTicket(token, payload) {
+            try {
+                const res = await axios.post(
+                    '/ticket-prices',
+                    payload,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+
+                return res.data
+
+            } catch (error) {
+
+                throw error.response?.data || error
+
+            }
+        },
+        async updateTicket(ticketId, token, payload) {
+
+            try {
+
+                const res = await axios.put(
+                    `/ticket-prices/${ticketId}`,
+                    payload,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+
+                return res.data
+
+            } catch (error) {
+
+                throw error.response?.data || error
+
+            }
+
+        },
+        async deleteTicket(ticketId, token) {
+
+            try {
+
+                const res = await axios.delete(
+                    `/ticket-prices/${ticketId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+
+                return res.data
+
+            } catch (error) {
+
+                throw error.response?.data || error
+
+            }
+
+        },
+        async deleteEvent(eventId, token) {
+
+            try {
+
+                const res = await axios.delete(
+                    `/events/${eventId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+
+                return res.data
+
+            } catch (error) {
+
+                throw error.response?.data || error
+
+            }
+
+        },
+        async getTicketTypes() {
+            try{
+                const res = await axios.get('/ticket-types')
+                return res.data
+
+            }catch(error){
+                throw error;
+            }
         }
+
 
 
     }

@@ -27,10 +27,10 @@
                             2MB</small>
                     </div>
                     <div class="d-flex mt-2">
-                        <button class="btn btn-offcial btn-color rounded-pill" @click="openPicker">
+                        <button class="btn btn-official btn-color rounded-pill" @click="openPicker">
                             Upload picture
                         </button>
-                        <button class="btn btn-offcial btn-color-cancel rounded-pill ms-2"  @click="removeAvatar">
+                        <button class="btn btn-official btn-color-cancel rounded-pill ms-2"  @click="removeAvatar">
                             Delete
                         </button>
                     </div>
@@ -99,7 +99,7 @@
                         {{ err.$message }}
                     </span>
                 </div>
-                <button type="submit" class="btn btn-offcial btn-color rounded-pill mt-3" :disabled="!isProfileChanged">
+                <button type="submit" class="btn btn-official btn-color rounded-pill mt-3" :disabled="!isProfileChanged">
                     Update information
                 </button>
             </form>
@@ -109,7 +109,6 @@
     <div class="modal fade" id="cropModal" tabindex="-1" ref="cropModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header d-flex">
                     <span class="modal-title-sm">
                         Crop Avatar
@@ -129,10 +128,10 @@
                         public.
                     </small>
                     <div class="d-flex">
-                        <button class="btn btn-offcial btn-color-cancel rounded-pill me-2" data-bs-dismiss="modal">
+                        <button class="btn btn-official btn-color-cancel rounded-pill me-2" data-bs-dismiss="modal">
                             Cancel
                         </button>
-                        <button class="btn btn-offcial btn-color rounded-pill" @click="saveCrop">
+                        <button class="btn btn-official btn-color rounded-pill" @click="saveCrop">
                             Update profile
                         </button>
                     </div>

@@ -14,6 +14,11 @@ import DashboardEventView from '@/views/events/DashboardEventView.vue'
 import HomePageView from '@/views/staff/HomePageView.vue'
 import PageNotFoundView from '@/views/PageNotFoundView.vue'
 import CreateEventView from '@/views/events/CreateEventView.vue'
+import PreviewEventView from '@/views/events/PreviewEventView.vue'
+import UpdateEventView from '@/views/events/UpdateEventView.vue'
+import TicketEventView from '@/views/events/TicketEventView.vue'
+import DashboardUserManagmentView from '@/views/admin/userManagement/DashboardUserManagmentView.vue'
+
 nprogress.configure({
   showSpinner: false, 
   tickleSpeed: 500, minimum: 0.2
@@ -88,6 +93,30 @@ const router = createRouter({
       name: 'create-event',
       component: CreateEventView,
       meta: {title: 'Create Event', roles: ['admin', 'manager'] }
+    },
+    {
+      path: '/events/preview/information/:slug',
+      name: 'preview-event',
+      component: PreviewEventView,
+      meta: {title: 'Preview Event', roles: ['admin', 'manager'] }
+    },
+    {
+      path: '/events/preview/update/:slug',
+      name: 'update-event',
+      component: UpdateEventView,
+      meta: {title: 'Update Event', roles: ['admin', 'manager'] }
+    },
+    {
+      path: '/events/preview/tickets/:slug',
+      name: 'ticket-event',
+      component: TicketEventView,
+      meta: {title: 'Ticket Event', roles: ['admin', 'manager'] }
+    },
+    {
+      path: '/user-management',
+      name: 'user-management',
+      component: DashboardUserManagmentView,
+      meta: {title: 'User Management', roles: ['admin'] }
     },
     {
       path: '/404',

@@ -6,9 +6,9 @@
       <Topbar />
 
       <div class="content">
-        <router-view />
         <CreateEvent />
-        <!-- <CreateEventForm /> -->
+        <!-- <StepCreateEvent /> -->
+        <!-- <StepCreateEvent /> -->
       </div>
     </div>
   </div>
@@ -16,10 +16,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import SidebarAdmin from '@/components/layouts/SidebarAdmin.vue';
+import SidebarAdmin from '@/components/layouts/Sidebar.vue';
 import Topbar from '@/components/layouts/Topbar.vue'
+// import StepCreateEvent from '@/components/events/StepCreateEvent.vue';
 import CreateEvent from '@/components/events/CreateEvent.vue';
-import CreateEventForm from '@/components/events/CreateEventForm.vue';
 const isCollapsed = ref(false)
 
 const toggleSidebar = () => {
