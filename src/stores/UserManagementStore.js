@@ -12,47 +12,44 @@ export const UserManagementStore = defineStore('UserManagementStore', {
 
     }),
     actions: {
-        async getAllUsers(token, page = 1, search = '', role = '') {
+        async getAllUsers(token, params = {}) {
             const res = await axios.get('/user-account/get-user', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
-                params: {
-                    page,
-                    search,
-                    role
-                }
+                params
             })
 
             this.users = res.data.data || []
             this.paginate = res.data.paginate || {}
             return res.data
         },
-        async getCustomers(token) {
-
+        async getCustomers(token, params = {}) {
             const res = await axios.get('/user-account/get-customer', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+                headers: { Authorization: `Bearer ${token}` },
+                params
             })
+            console.log(res.data)
 
             this.customers = res.data.data || []
-
             return res.data
         },
         async createAccount(token, formData) {
 
-            const res = await axios.post(
-                '/user-account',
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
-                    }
+            return axios.post('/user-account', formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
                 }
-            )
-            return res.data
+            })
+            .then(res => ({
+                success: true,
+                data: res.data
+            }))
+            .catch(error => ({
+                success: false,
+                error: error?.response?.data
+            }))
         },
         async blockUser(id, token) {
 

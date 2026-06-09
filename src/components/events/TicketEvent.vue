@@ -8,9 +8,13 @@
                     <router-link class="tab-table-type" :to="`/events/preview/information/${event.slug}`"
                         active-class="active">Event Information</router-link>
                 </li>
-                <li class="nav-item" role="presentation">
+                <li class="nav-item" role="presentation" style="margin-right: 4px;">
                     <router-link class="tab-table-type" :to="`/events/preview/tickets/${event.slug}`"
                         active-class="active">Ticket information</router-link>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <router-link class="tab-table-type" :to="`/events/preview/promotion/${event.slug}`"
+                        active-class="active">Promotions</router-link>
                 </li>
             </ul>
             <div style="margin-top: 15px;">
@@ -31,45 +35,57 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="wrapper-list-ticket content-wrapper-section position-relative"
-                                v-for="ticket in event.tickets" :key="ticket.id">
-                                <div
-                                    class="ticket-wrapper flex-row d-flex align-items-center justify-content-between position-relative">
-                                    <div class="ui dropdown ms-3 setting-dropdown position-absolute"
-                                        style="right: 0px; top: 0;" :data-id="ticket.id">
-                                        <input type="hidden">
-                                        <div class="wrapper d-flex align-items-center" style="padding: 6px!important;">
-                                            <Ellipsis :size="16" :stroke-width="1.75" />
-                                        </div>
-                                        <div class="menu" style="top: calc(100% - 5px)!important;">
-                                            <div class="item" @click="openEditDropdown(ticket)">
-                                                Update information
+                            <div v-if="event?.tickets?.length > 0">
+                                <div class="wrapper-list-ticket content-wrapper-section position-relative"
+                                    v-for="ticket in event.tickets" :key="ticket.id">
+                                    <div
+                                        class="ticket-wrapper flex-row d-flex align-items-center justify-content-between position-relative">
+                                        <div class="ui dropdown ms-3 setting-dropdown position-absolute"
+                                            style="right: 0px; top: 0;" :data-id="ticket.id">
+                                            <input type="hidden">
+                                            <div class="wrapper d-flex align-items-center" style="padding: 6px!important;">
+                                                <Ellipsis :size="16" :stroke-width="1.75" />
                                             </div>
-                                            <div class="item" @click="confirmDelete(ticket.id)">
-                                                Move to trash
+                                            <div class="menu" style="top: calc(100% - 5px)!important;">
+                                                <div class="item" @click="openEditDropdown(ticket)">
+                                                    Update information
+                                                </div>
+                                                <div class="item">
+                                                    Promotion
+                                                </div>
+                                                <div class="item" @click="confirmDelete(ticket.id)">
+                                                    Move to trash
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="total-wrapper content-wrapper-section mb-0">
-                                        <div class="small-t">Total Tickets</div>
-                                        <div class="Total-ticket">{{ ticket?.quantity }}</div>
-                                    </div>
-                                    <div class="d-flex align-items-start flex-column ">
-                                        <div class="small-t">Ticket type:</div>
-                                        <div class="title-ticket">{{ ticket?.ticket_type.name }}</div>
-                                    </div>
-                                    <div class="d-flex align-items-start flex-column ">
-                                        <div class="small-t">Price:</div>
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <DollarSign :stroke-width="1.75" size="18" color="rgb(3, 111, 3)" />
-                                            <div class="val-ticket price">{{ ticket?.price }}</div>
+                                        <div class="total-wrapper content-wrapper-section mb-0">
+                                            <div class="small-t">Total Tickets</div>
+                                            <div class="Total-ticket">{{ ticket?.quantity }}</div>
                                         </div>
-                                    </div>
-                                    <div class="d-flex align-items-start flex-column" style="margin-right: 15px;">
-                                        <div class="small-t">Created at:</div>
-                                        <div class="val-ticket">{{ formatDateTime(ticket?.created_at) }}</div>
+                                        <div class="d-flex align-items-start flex-column ">
+                                            <div class="small-t">Ticket type:</div>
+                                            <div class="title-ticket">{{ ticket?.ticket_type.name }}</div>
+                                        </div>
+                                        <div class="d-flex align-items-start flex-column ">
+                                            <div class="small-t">Price:</div>
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <DollarSign :stroke-width="1.75" size="18" color="rgb(3, 111, 3)" />
+                                                <div class="val-ticket price">{{ ticket?.price }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-start flex-column" style="margin-right: 15px;">
+                                            <div class="small-t">Created at:</div>
+                                            <div class="val-ticket">{{ formatDateTime(ticket?.created_at) }}</div>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div v-else class="no-data-wrapper">
+                                <img src="../../assets/images/file.png" alt="">
+                                <span>No tickets found</span>
+                                <span class="sh-desc">
+                                    Try adding a new ticket for this event.
+                                </span>
                             </div>
 
                         </div>
@@ -149,7 +165,7 @@
             <span class="title-off" style="font-size: 18px;">
                 {{ isEditMode ? 'Update Ticket' : 'Create Ticket' }}
             </span>
-            <span>{{ isEditMode
+            <span class="b-t">{{ isEditMode
                 ? 'Update Ticket lets you edit existing ticket details to keep information.'
                 : 'Create a new ticket for this event.' }}
             </span>
@@ -232,8 +248,7 @@
             </button>
 
             <button class="btn btn-official btn-color " @click="isEditMode ? updateTicket(selectedTicketId) : createTicket()">
-            <!-- <button class="btn btn-official btn-color " @click="updateTicket(selectedTicketId)"> -->
-                Update Ticket
+                 {{ isEditMode ? 'Update Ticket' : 'Create Ticket' }}
             </button>
         </div>
         </div>
@@ -316,10 +331,10 @@ onUpdated(() => {
     })
 })
 onMounted(async () => {
-
-    const res = await eventStore.getTicketTypes()
-    ticketTypes.value = res.data
     await fetchEvent()
+    const token = localStorage.getItem('auth_token')
+    const res = await eventStore.getTicketTypes(token, event.value.id)
+    ticketTypes.value = res.data
     await nextTick()
     $('.ui.dropdown.setting-dropdown').dropdown()
 })
@@ -342,11 +357,12 @@ const resetModal = () => {
     selectedTicketId.value = null
 
     editForm.value = {
-        event_id: '',
+        event_id: event.value?.id || '',
         ticket_type_id: '',
         price: '',
         quantity: ''
     }
+
     selectedTicketTypeName.value = 'Select ticket type'
 }
 
@@ -420,22 +436,51 @@ const openEditDropdown = (ticket) => {
 
 // ==========================================
 const openCreateTicket = () => {
+
+    // 🚫 Prevent creating ticket when event is published
+    if (event.value?.status === 'published') {
+        toast.add({
+            severity: 'error',
+            summary: 'Not allowed',
+            detail: 'You cannot create tickets for a published event',
+            life: 3000
+        })
+
+        return
+    }
+
     isEditMode.value = false
     selectedTicketId.value = null
 
     resetModal()
 
-    editForm.value.event_id = event.value.id
-    // reset UI state
+    editForm.value = {
+        event_id: event.value.id,
+        ticket_type_id: '',
+        price: '',
+        quantity: ''
+    }
+
     selectedTicketTypeName.value = 'Select ticket type'
 
     nextTick(() => {
-        v$.value.$reset()
-
         const $dropdown = $('.ui.dropdown.ticket-type-dropdown')
 
-        // IMPORTANT: destroy previous state
-        $dropdown.dropdown('clear')
+        nextTick(() => {
+            const $dropdown = $('.ui.dropdown.ticket-type-dropdown')
+
+            $dropdown.dropdown('destroy')
+
+            $dropdown.dropdown({
+                clearable: true,
+                onChange: (value, text) => {
+                    editForm.value.ticket_type_id = value
+                    selectedTicketTypeName.value = text
+                }
+            })
+
+            v$.value.$reset()
+        })
 
         $dropdown.dropdown({
             onChange: (value, text) => {
@@ -444,22 +489,40 @@ const openCreateTicket = () => {
                 v$.value.ticket_type_id.$touch()
             }
         })
+
+        v$.value.$reset()
     })
 
     const offcanvasEl = document.getElementById('updateTicketOffcanvas')
     const offcanvas = Offcanvas.getOrCreateInstance(offcanvasEl)
-
     offcanvas.show()
 }
 const createTicket = async () => {
-    isEditMode.value = false
     const isValid = await v$.value.$validate()
     if (!isValid) return
+
+    // 🔴 DEBUG (VERY IMPORTANT)
+    console.log("CREATE PAYLOAD:", editForm.value)
+    console.log("TICKET TYPE:", editForm.value.ticket_type_id)
+    console.log("FULL FORM:", editForm.value)
+        if (!editForm.value.ticket_type_id) {
+        toast.add({
+            severity: 'error',
+            summary: 'Missing ticket type',
+            detail: 'Please select ticket type',
+            life: 3000
+        })
+        return
+    }
 
     try {
         const token = localStorage.getItem('auth_token')
 
-        await eventStore.createTicket(token, editForm.value)
+        const res = await eventStore.createTicket(token, editForm.value)
+
+        console.log("CREATE RESPONSE:", res)
+
+        await fetchEvent()
 
         toast.add({
             severity: 'success',
@@ -468,16 +531,15 @@ const createTicket = async () => {
             life: 3000
         })
 
-        await fetchEvent()
-
         const offcanvasEl = document.getElementById('updateTicketOffcanvas')
-        const offcanvas = Offcanvas.getOrCreateInstance(offcanvasEl)
-        offcanvas.hide()
+        Offcanvas.getOrCreateInstance(offcanvasEl).hide()
 
         resetModal()
         v$.value.$reset()
 
     } catch (error) {
+        console.log("CREATE ERROR:", error)
+
         toast.add({
             severity: 'error',
             summary: 'Error',
@@ -549,18 +611,18 @@ const fetchEvent = async () => {
     try {
         const token = localStorage.getItem('auth_token')
         const slug = route.params.slug
+
         const res = await eventStore.getEventBySlug(token, slug)
+
+        event.value = null
+        await nextTick()
+
         event.value = res.data
-        console.log(event.value)
 
     } catch (error) {
-
         console.log(error)
-
     } finally {
-
         loading.value = false
-
     }
 }
 
@@ -617,7 +679,9 @@ const updateTicket = async (ticketId) => {
         })
 
         await fetchEvent()
-        v$.value.$reset()
+        nextTick(() => {
+            v$.value.$reset()
+        })
         resetModal()
         isEditMode.value = false
         const offcanvasEl = document.getElementById('updateTicketOffcanvas')

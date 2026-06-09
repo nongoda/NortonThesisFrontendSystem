@@ -192,7 +192,11 @@ const verifyOtp = async () => {
             authStore.clearOtpTimer()
 
             const role = res.data.user.role
-
+            // const redirects = {
+            //     admin: '/dashboard',
+            //     manager: '/events',
+            //     staff: '/home-page'
+            // }
             router.push(roleRedirect[role] || '/')
         } else {
             otpError.value = true

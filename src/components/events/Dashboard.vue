@@ -298,10 +298,13 @@
                                             <Ellipsis :size="20" :stroke-width="1.75" />
                                         </div>
                                         <div class="menu">
-                                            <div class="item">
-                                                Update information
+                                            <div class="item" @click="goToEvent('preview-event', event.slug)">
+                                                View event detail
                                             </div>
-                                            <div class="item">
+                                            <div class="item" @click="goToEvent('update-event', event.slug)">
+                                                Update event
+                                            </div>
+                                            <div class="item" @click="confirmDeleteEvent(event)">
                                                 Move to trash
                                             </div>
                                         </div>

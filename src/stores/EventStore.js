@@ -62,6 +62,7 @@ export const EventStore = defineStore('EventStore', {
                     has_more_pages: false,
                     has_pages: false
                 };
+                console.log(res.data)
                 return res.data;
 
             } finally {
@@ -219,9 +220,13 @@ export const EventStore = defineStore('EventStore', {
             }
 
         },
-        async getTicketTypes() {
+        async getTicketTypes(token, id) {
             try{
-                const res = await axios.get('/ticket-types')
+                const res = await axios.get(`/events/available-ticket-types/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
                 return res.data
 
             }catch(error){

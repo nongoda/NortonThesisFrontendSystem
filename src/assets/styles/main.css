@@ -201,7 +201,9 @@ button{
     border-right: 1px solid #ddd;
     background: #f7f7f7;
     padding-inline: 10px;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow-y: auto;
+    overflow-x: hidden;
     /* transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); */
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1)!important;
 }
@@ -232,7 +234,7 @@ button{
 /* LINK */
 .menu-link {
   position: relative;
-
+    font-weight: 450;
   display: flex;
   align-items: center;
 
@@ -249,6 +251,7 @@ button{
 }
 
 .sidebar .menu-link:hover {
+    font-weight: 450;
     background-color: #ffffff;
     box-shadow: 0 0 8px 0px #dfdde0;
 }
@@ -256,8 +259,9 @@ button{
     stroke: #7e05a3!important;
 }
 .sidebar .menu-link:hover .label{
+    font-weight: 450;
     color: #7e05a3!important;
-    font-weight: 500!important;
+    /* font-weight: 500!important; */
 }
 .router-link-active.menu-link{
     background-color: #ffffff;

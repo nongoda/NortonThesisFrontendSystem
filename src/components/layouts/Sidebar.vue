@@ -46,6 +46,7 @@ import {
   Tag,
   UsersRound,
   Settings,
+  AudioLines
 } from 'lucide-vue-next'
 
 import { computed } from 'vue'
@@ -88,7 +89,13 @@ const menuGroups = [
         name: 'Dashboard',
         path: '/dashboard',
         icon: LayoutDashboard,
-        roles: ['admin', 'manager']
+        roles: ['admin']
+      },
+      {
+        name: 'Dashboard',
+        path: '/home',
+        icon: LayoutDashboard,
+        roles: ['manager']
       },
       {
         name: 'Dashboard',
@@ -98,10 +105,16 @@ const menuGroups = [
       },
     ]
   },
-
+  // <AudioLines />
   {
     title: 'Event Management',
     items: [
+      {
+        name: 'Artists',
+        path: '/artists',
+        icon: AudioLines,
+        roles: ['admin', 'manager']
+      },
       {
         name: 'Events',
         path: '/events',
@@ -128,7 +141,7 @@ const menuGroups = [
     items: [
       {
         name: 'Customers',
-        path: '/customers',
+        path: '/customer-management',
         icon: Users,
         roles: ['admin']
       },

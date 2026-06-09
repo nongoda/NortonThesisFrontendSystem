@@ -135,6 +135,9 @@
                                     <!-- :class="{ 'form-control-err': v$.address.$error }" -->
                                     <input type="text" class="form-control mb-3"
                                         placeholder="Input the venue address here" v-model="form.address">
+                                        <span class="warning-msg-input" v-for="err in v$.address.$errors" :key="err.$uid">
+                                        {{ err.$message }}
+                                    </span>
                                 </div>
                                 <div class="w-100 d-flex">
                                     <div class="w-50 pe-3">
@@ -528,9 +531,22 @@ const rules = {
     },
 
     end_date: {
+        required: helpers.withMessage(
+            'End date is required',
+            required
+        ),
         endDateAfterStart
     },
-
+    address: {
+        required: helpers.withMessage(
+            'Address is required',
+            required
+        ),
+        maxLength: helpers.withMessage(
+            'Maximum 500 characters allowed',
+            maxLength(500)
+        )
+    },
     venue_name: {
         required: helpers.withMessage(
             'Venue name is required',
@@ -554,6 +570,10 @@ const rules = {
     },
 
     thumbnail: {
+        required: helpers.withMessage(
+            'Thumbnail is required',
+            required
+        ),
         imageSize
     }
 }

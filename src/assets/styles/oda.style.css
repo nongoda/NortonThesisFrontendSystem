@@ -1445,9 +1445,22 @@
         }
     }
 }
+.border-bottom{
+    border-bottom: 1px solid rgba(151, 151, 151, 0.301) !important;
+}
 .offcanvas{
+
+    label{
+        margin-bottom: 5px!important;
+    }
+    /* .back-page::onC */
+    .back-page{
+        font-weight: 450!important;
+        color: #1a0e1d!important;
+    }
     padding: 30px;
     .title-off{
+        font-size: 20px!important;
         font-weight: 500;
     }
     .ui.dropdown{
@@ -1495,8 +1508,73 @@
             display: flex;
         }
     }
+    .t-section{
+        font-size: 17px;
+        font-weight: 450;
+    }
+    .select-ticket-wrapper{
+        border-left: 1px solid rgba(151, 151, 151, 0.312);
+        padding-left: 20px;
+        margin-left: 20px;
+    }
+    .wrapper-ticket{
+        padding: 10px 13px;
+        border-radius: 12px;
+        border: 1px solid rgba(151, 151, 151, 0.312);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .ticket-name{
+            font-weight: 450;
+            font-size: 14px;
+        }
+        .remain span{
+            font-size: 13px;
+            margin-right: 5px;
+            font-weight: 400;
+        }
+        .total{
+            font-weight: 500;
+            font-size: 15px;
+        }
+    }
+    .wrapper-ticket.active{
+        background-color: #f3e5f87b;
+        border-color: 1px solid #705479!important;
+        .ticket-name{
+            color: #60037c!important;
+        }
+    }
+    .b-t{
+        font-weight: 350;
+        font-size: 15px!important;
+    }
+    .t-label{
+        font-size: 15px!important;
+        font-weight: 350!important;
+        color: #58575a!important;
+        width: 40%;
+    }
+    .val{
+        font-weight: 400!important;
+        font-size: 15px!important;
+        line-height: 16px!important;
+    }
+    .list-selected-ticket{
+        border: 1px solid rgba(151, 151, 151, 0.312);
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .price{
+            font-weight: 400;
+        }
+    }
+
 }
-.user-management{    
+.table-pro-list{    
     .wrapper-list .list-user{
         margin-bottom: 10px!important;
         border-radius: 16px;
@@ -1515,7 +1593,15 @@
     .main-val{
         font-size: 15px;
         font-weight: 450;
-        line-height: 10px!important;
+        line-height: 16px!important;
+    }
+    .main-val.one-line{
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        /* line-height: ; */
+
     }
     .small-val{
         font-size: 13px;
@@ -1573,4 +1659,69 @@
 }
 .ui.dropdown .wrapper .default.text{
     font-weight: 400!important;
+}
+
+.form-create{
+    .top-border{
+        border-top: 1px solid rgba(151, 151, 151, 0.593);
+        padding: 15px 0;
+        margin-top: 15px;
+    }
+    .wrapper-border-top{
+        border-radius: 0;
+    }
+    .desc-wrapper{
+        font-size: 14px;
+        /* margin-bottom: 10px; */
+    }
+    .title-wrapper{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .left-side{
+        padding-left: 20px;
+        margin-left: 20px;
+        border-left: 1px solid rgba(151, 151, 151, 0.614);
+    }
+    .note span{
+        color: #710505!important;
+        font-style: italic;
+        font-weight: 400;
+    }
+}
+
+.ui.dropdown.no-selected{
+    .menu .item.active{
+        color: #110c17!important;
+        background-color: transparent!important;
+    }
+    .menu .item{
+        width: 150px!important;
+    }
+    .menu .item:hover, .menu .item.active:hover{
+        background-color: #efefef!important;
+    }
+}
+
+.artist{
+    .ui.dropdown{
+        .menu.filter{
+            left: calc(-160px + 40px)!important;
+            width: fit-content!important;
+            flex-direction: column;
+            /* .item{
+                width: max-content!important;
+            } */
+        }
+        .menu.filter>.item{
+            width: 160px!important;
+            /* width: 140px!important; */
+        }
+    }
+}
+.artist-image-profile{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
 }

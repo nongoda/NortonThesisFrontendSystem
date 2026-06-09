@@ -5,10 +5,16 @@
         <div class="table-content" style="margin-top: 15px;">
             <ul class="view-type d-inline-flex mb-0" v-if="event?.slug">
                 <li class="nav-item" role="presentation" style="margin-right: 4px;">
-                    <router-link class="tab-table-type" :to="`/events/preview/information/${event.slug}`" active-class="active">Event Information</router-link>
+                    <router-link class="tab-table-type" :to="`/events/preview/information/${event.slug}`"
+                        active-class="active">Event Information</router-link>
+                </li>
+                <li class="nav-item" role="presentation" style="margin-right: 4px;">
+                    <router-link class="tab-table-type" :to="`/events/preview/tickets/${event.slug}`"
+                        active-class="active">Ticket information</router-link>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <router-link class="tab-table-type" :to="`/events/preview/tickets/${event.slug}`" active-class="active">Ticket information</router-link>
+                    <router-link class="tab-table-type" :to="`/events/preview/promotion/${event.slug}`"
+                        active-class="active">Promotions</router-link>
                 </li>
             </ul>
             <div style="margin-top: 15px;">

@@ -53,3 +53,19 @@ for (const [key, component] of Object.entries(LucideIcons)) {
 import { AuthStore } from './stores/AuthStore'
 const auth = AuthStore()
 auth.loadSession()
+router.beforeEach(async (to) => {
+  const authStore = AuthStore()
+  const user = await authStore.getCurrentUser()
+
+  const allowedRoles = ['admin', 'manager', 'staff']
+
+  if (authStore.token && user) {
+    const role = user.role?.toLowerCase()
+
+    if (!allowedRoles.includes(role)) {
+      authStore.clearSession()
+      return '/'
+    }
+  }
+})
+// =====================================================================================

@@ -252,7 +252,7 @@
             </div>
             <div class="d-flex align-items-center">
                 <router-link to="/events" class="back-page me-3">
-                    <ArrowLeft :size="18" :stroke-width="1.75" /> Back to dashboard
+                    <ArrowLeft :size="18" :stroke-width="1.75" /> Back to pervious
                 </router-link>
                 <button class="btn-official btn-color" type="button" @click="submitEvent">Create event</button>
             </div>
