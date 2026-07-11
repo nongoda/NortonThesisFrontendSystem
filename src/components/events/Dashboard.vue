@@ -79,7 +79,7 @@
                     <div class="title-table">Event Records</div>
                     <span class="small-detail">Quick overview of all event activities</span>
                 </div>
-                <router-link to="/events/create" class="btn btn-official btn-color">
+                <router-link to="/events/create"  v-if="isManager" class="btn btn-official btn-color">
                     <CircleFadingPlus :size="20" :stroke-width="1.75" style="stroke: white; margin-right: 7px;" />
                     Create event
                 </router-link>
@@ -101,12 +101,12 @@
                                 Published
                             </button>
                         </li>
-                        <li class="nav-item r">
+                        <!-- <li class="nav-item r">
                             <button class="tab-table-type" :class="{ active: currentStatus === 'completed' }"
                                 @click="setStatus('completed')">
                                 Completed
                             </button>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <button class="tab-table-type" :class="{ active: currentStatus === 'cancelled' }"
                                 @click="setStatus('cancelled')">
@@ -184,14 +184,16 @@
                     aria-labelledby="pills-list-tab" tabindex="0">
                     <div v-if="eventStore.events && eventStore.events.length > 0">
                         <div v-for="event in eventStore.events" :key="event.id">
-                            <div class="wrapper-list d-flex align-items-start justify-content-between w-100">
-                                <div class="w-50 d-flex flex-column">
-                                    <div class="title">
-                                        {{ event.title }}
+                            <div class="wrapper-list d-flex flex-row align-items-start justify-content-between w-100">
+                                <div class="w-50 d-flex flex-column h-100 justify-content-between">
+                                    <div class="">
+                                        <div class="title">
+                                            {{ event.title }}
+                                        </div>
+                                        <p class="desc text-start mt-0 mb-3">
+                                            {{ event.short_description }}
+                                        </p>
                                     </div>
-                                    <p class="desc text-start mt-0">
-                                        {{ event.short_description }}
-                                    </p>
                                     <div class="created-at-by d-flex mt-2">
                                         <span class="created-at">
                                             Created at:
@@ -205,7 +207,7 @@
                                 </div>
                                 <!-- RIGHT -->
                                 <div class="w-50 d-flex flex-column align-items-end justify-content-between"
-                                    style="height: 122px;">
+                                    style="height: 100%;">
                                     <!-- TOP -->
                                     <div class="d-flex align-items-center">
 
@@ -229,18 +231,18 @@
                                                 <div class="item" @click="goToEvent('preview-event', event.slug)">
                                                     View event detail
                                                 </div>
-                                                <div class="item" @click="goToEvent('update-event', event.slug)">
+                                                <div v-if="isManager && event.status == ['draft', 'published']" class="item" @click="goToEvent('update-event', event.slug)">
                                                     Update event
                                                 </div>
-                                                <div class="item" @click="confirmDeleteEvent(event)">
-                                                    Move to trash
+                                                <div v-if="isManager" class="item" @click="openCancelModal(event)">
+                                                    Cancel event
                                                 </div>
                                             </div>
 
                                         </div>
                                     </div>
                                     <!-- BOTTOM -->
-                                    <div class="row w-100">
+                                    <div class="row w-100 mt-3">
                                         <div class="col-4 content-tt">
                                             <span class="label-content-tt">
                                                 Related artists
@@ -301,11 +303,11 @@
                                             <div class="item" @click="goToEvent('preview-event', event.slug)">
                                                 View event detail
                                             </div>
-                                            <div class="item" @click="goToEvent('update-event', event.slug)">
+                                            <div v-if="isManager" class="item" @click="goToEvent('update-event', event.slug)">
                                                 Update event
                                             </div>
-                                            <div class="item" @click="confirmDeleteEvent(event)">
-                                                Move to trash
+                                            <div v-if="isManager" class="item" @click="openCancelModal(event)">
+                                                Cancel event
                                             </div>
                                         </div>
                                     </div>
@@ -405,10 +407,54 @@
                         Cancel
                     </button>
 
-                    <button type="button" class="w-50 ms-2 btn btn-official btn-color-warning rounded-pill"
+                    <button type="button" class="w-50 ms-2 btn btn-official btn-color-warning "
                         @click="deleteEvent">
                         Delete
                     </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+        <div class="modal fade event-confirm" id="cancelEventModal" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <div class="modal-title text-danger">
+                        Event Cancellation
+                    </div>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="info-modal mb-2">
+                        You are about to cancel this event.
+                    </div>
+                    
+                    <div class="warning-wrapper mb-0">
+                        Once cancelled:
+                        <ul class="my-1 info-modal">
+                            <li>Ticket sales will be disabled automatically.</li>
+                            <li>All valid tickets will become cancelled.</li>
+                            <li>The event cannot be published again.</li>
+                        </ul>
+                    </div>
+                    <div class="info-modal text-danger mt-2">This action cannot be undone.</div>
+
+                </div>
+
+                <div class="d-flex justify-content-center gap-2 p-4 pt-0">
+
+                    <button class="btn btn-official btn-color-cancel w-50" data-bs-dismiss="modal">
+                        Keep Event
+                    </button>
+
+                    <button class="btn btn-official btn-color-warning w-50" @click="confirmCancellation">
+                        Yes, Cancel Event
+                    </button>
+
                 </div>
 
             </div>
@@ -428,7 +474,13 @@ import {
 } from 'lucide-vue-next';
 import {Modal} from 'bootstrap'
 import { useToast } from 'primevue/usetoast'
+import { AuthStore } from '@/stores/AuthStore'
 
+
+const authStore = AuthStore()
+const isManager = computed(() =>
+    authStore.user?.role?.toLowerCase() === 'manager'
+)
 const toast = useToast()
 const route = useRoute()
 const router = useRouter()
@@ -506,9 +558,8 @@ const initDropdowns = async () => {
 const search = ref(route.query.search || '')
 const currentPage = ref(Number(route.query.page) || 1)
 const currentStatus = ref(route.query.status || '')
-const selectedDeleteEventId = ref(null)
-const selectedDeleteEventSlug = ref(null)
-
+const selectedCancelEvent = ref(null)
+let cancelModalInstance = null
 const summary = ref({
     total: {
         draft_events: 0,
@@ -541,7 +592,13 @@ onMounted(async () => {
 })
 
 // ===========================
+const openCancelModal = (eventItem) => {
+    selectedCancelEvent.value = eventItem
 
+    const modalEl = document.getElementById('cancelEventModal')
+    cancelModalInstance = Modal.getOrCreateInstance(modalEl)
+    cancelModalInstance.show()
+}
 import $ from 'jquery'
 import { CalendarDays } from 'lucide-vue-next';
 
@@ -676,43 +733,49 @@ const confirmDeleteEvent = (eventItem) => {
     modal.show()
 }
 
-const deleteEvent = async () => {
+const confirmCancellation = async () => {
     try {
         const token = localStorage.getItem('auth_token')
 
-        await eventStore.deleteEvent(
-            selectedDeleteEventId.value,
-            token
+        const res = await eventStore.updateEventStatus(
+            selectedCancelEvent.value.id,
+            token,
+            'cancelled'
         )
+
+        if (res?.result === false) {
+            toast.add({
+                severity: 'error',
+                summary: 'Not allowed',
+                detail: res.message || 'Unable to cancel event.',
+                life: 3000
+            })
+            return
+        }
 
         toast.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Event deleted successfully',
+            detail: 'Event cancelled successfully.',
             life: 3000
         })
 
-        // refresh list
         await fetchEvents()
 
-        const modalEl = document.getElementById('deleteEventModal')
-        const modal = Modal.getInstance(modalEl)
-        modal.hide()
+        cancelModalInstance?.hide()
+
+        selectedCancelEvent.value = null
 
     } catch (error) {
-        const message =
-            error?.response?.data?.message ||
-            'Failed to delete event'
 
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: message,
+            detail:
+                error?.response?.data?.message ||
+                'Failed to cancel event.',
             life: 3000
         })
-    } finally {
-        selectedDeleteEventId.value = null
-        selectedDeleteEventSlug.value = null
     }
 }
 //====================================================

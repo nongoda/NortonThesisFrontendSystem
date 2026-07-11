@@ -190,6 +190,10 @@
 
             <!-- ACTION -->
             <div class="d-flex mt-4">
+                <a href="#" class="back-page me-3" @click.prevent="goBack">
+                        <ArrowLeft :size="18" :stroke-width="1.75" />
+                        Back to previous page
+                    </a>
                 <button type="button" class="btn-official btn-color" @click="updateArtist">
                     Update Artist
                 </button>
@@ -211,7 +215,13 @@ const route = useRoute()
 const router = useRouter()
 const store = ArtistManagementStore()
 const toast = useToast()
-
+const goBack = () => {
+    if (window.history.length > 1) {
+        router.back()
+    } else {
+        router.push('/events')
+    }
+}
 const form = ref({
     name: '',
     stage_name: '',

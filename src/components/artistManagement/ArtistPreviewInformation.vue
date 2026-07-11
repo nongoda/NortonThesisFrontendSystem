@@ -62,7 +62,7 @@
                                 <div class="wrapper align-items-start mb-0">
                                     <div class="tda">Status:</div>
                                     <div class="tda-content">
-                                        <span :class="artist.is_active ? 'text-success' : 'text-danger'">
+                                        <span class="status" :class="artist.is_active ? 'published' : 'cancelled'">
                                             {{ artist.is_active ? 'Active' : 'Inactive' }}
                                         </span>
                                     </div>

@@ -1,6 +1,6 @@
 <template>
     <VerifyOTPForm/>
-    <footer class="no-link-footer">
+    <footer class="no-link-footer position-absolute" style="z-index: 1000;">
         <small>Copyright © 2025 UI Initiative by Lacima Cartel</small>
     </footer>
 </template>

@@ -3,10 +3,10 @@
     <SidebarAdmin :isCollapsed="isCollapsed" @toggle="toggleSidebar" />
 
     <div class="main">
-      <Topbar/>
+      <Topbar />
 
       <div class="content">
-        <router-view />
+        <AllPayment />
       </div>
     </div>
   </div>
@@ -16,6 +16,7 @@
 import { ref } from 'vue'
 import SidebarAdmin from '@/components/layouts/Sidebar.vue';
 import Topbar from '@/components/layouts/Topbar.vue'
+import AllPayment from '@/components/payments/AllPayment.vue';
 const isCollapsed = ref(false)
 
 const toggleSidebar = () => {

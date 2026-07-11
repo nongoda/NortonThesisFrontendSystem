@@ -28,7 +28,7 @@
                                     </span>
                                     <span>Manage all ticket promotions, and campaign details for event.</span>
                                 </div>
-                                <div class="w-50 d-flex align-items-end justify-content-end">
+                                <div class="w-50 d-flex align-items-end justify-content-end" v-if="isManager">
                                     <button @click="openCreatePromotion" type="button"
                                         class="update-event-information btn btn-official btn-color">
                                         <Plus color="#fff" :stroke-width="2" size="18" style="margin-right: 5px;" />
@@ -64,7 +64,7 @@
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center  " style="width: 20%;">                        
-                                        <div class="main-val">{{ discount?.value }}</div>
+                                        <div class="main-val">{{ discount?.value }} {{ discount?.type === 'percentage' ? '%' : 'USD' }}</div>
                                     </div>
                                     <div class="d-flex align-items-center " style="width: 20%;">
                                         <div class="main-val">{{ discount?.max_usage }}</div>
@@ -78,7 +78,7 @@
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-center " style="width: 10%;">                                               
-                                        <div class="ui dropdown ms-3 settings-dropdown no-selected">
+                                        <div class="ui dropdown ms-3 settings-dropdown no-selected rounded-pill">
                                             <input type="hidden">
                                             <div class="wrapper d-flex align-items-center mb-0" style="padding: 5px!important; border-radius: 50%!important;">
                                                 <Ellipsis :size="16" :stroke-width="1.75" />
@@ -86,8 +86,8 @@
 
                                             <div class="menu filter">
                                                 <div class="item" @click="openDiscountDetail(discount)">View detail</div>
-                                                <div class="item" @click="openUpdateDiscount(discount)">Update discount</div>
-                                                <div class="item" @click="openDeleteModal(discount)">Delete discount</div>
+                                                <div class="item" v-if="isManager && event.status === 'published'" @click="openUpdateDiscount(discount)">Update discount</div>
+                                                <div class="item" v-if="isManager && event.status === 'published'" @click="openDeleteModal(discount)">Delete discount</div>
                                             </div>
                                         </div>
                                     </div>
@@ -102,7 +102,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="col-5 event-preview">
+                        <div class="col-5 event-preview right">
                             <div class="content-wrapper-section">
                                 <span class="title-event">
                                     Event Insights
@@ -121,18 +121,18 @@
                                     </div>
                                     <div class="wrapper">
                                         <div class="tda">Created at:</div>
-                                        <span class="vlaue tda-content">{{ formatDateTime(event.created_at)}}</span>
+                                        <span class="vlaue tda-content">{{ formatDateTime(event.created_at)
+                                            }}</span>
                                     </div>
                                     <div class="wrapper">
                                         <div class="tda">Updated at:</div>
-                                        <span class="vlaue tda-content">{{ formatDateTime(event.updated_at) }}</span>
+                                        <span class="vlaue tda-content">{{ formatDateTime(event.updated_at)}}</span>
                                     </div>
-                                    <div class="wrapper align-items-center mb-0">
-                                        <div class="tda">Published:</div>
+                                    <div class="wrapper align-items-center mb-0" v-if="isManager && event.status === 'published'">
+                                        <div class="tda">Enable ticket sales:</div>
                                         <div class="status-update tda-content d-flex align-items-center">
                                             <label class="switch mb-0" :class="{ 'outdated-switch': isOutdated }">
-                                                <input :checked="event.status === 'published'" type="checkbox"
-                                                    @change="toggleStatus">
+                                                <input :checked="event.is_sales_enabled"type="checkbox" @change="toggleSales">
                                                 <div class="slider">
                                                     <div class="circle">
                                                         <svg class="cross" xml:space="preserve"
@@ -162,6 +162,70 @@
                                                 </div>
                                             </label>
                                         </div>
+                                        <!-- <span class="vlaue tda-content">{{ formatDateTime(event.updated_at)}}</span> -->
+                                    </div>
+                                     <div class="wrapper mb-0">
+                                        <button class="btn-official btn-color w-100" type="button" v-if="event.status == 'draft'" @click="openPublishModal">
+                                            Publish event
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-wrapper-section" v-if="saleEvent">
+                                <span class="title-event">
+                                    Sales Overview
+                                </span>
+                                <div class="w-100 mt-2">
+
+                                    <div class="wrapper">
+                                        <div class="tda">Total Revenue:</div>
+                                        <div class="tda-content">
+                                            {{ saleEvent.revenue.usd.value }} $ 
+                                        </div>
+                                    </div>
+                                    <div class="wrapper">
+                                        <div class="tda">Tickets Sold:</div>
+                                        <span class="vlaue tda-content">{{ saleEvent.tickets_sold }} / {{ saleEvent.original_tickets }}</span>
+                                    </div>
+                                    <div class="wrapper mb-0">
+                                        <div class="tda">Remaining Tickets:</div>
+                                        <span class="vlaue tda-content">{{ saleEvent.remaining_tickets }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-wrapper-section" v-if="saleEvent?.ticket_types && saleEvent.ticket_types.length > 0">
+                                <span class="title-event">
+                                    Ticket Type Breakdown
+                                </span>
+                                <div class="w-100 mt-2">
+                                    <div class="wrapper" v-for="ticket in saleEvent.ticket_types"
+                                        :key="ticket.ticket_price_id">
+                                        <div class="tda">
+                                            Tickets {{ ticket.ticket_type }}:
+                                        </div>
+
+                                        <div class="tda-content">
+                                            {{ ticket.sold }} Tickets/ {{ ticket.revenue.usd.value }}$
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-wrapper-section cancellation" v-if="event.status === 'published' && isManager">
+                                <span class="title-event">
+                                    Confirm Event Cancellation
+                                </span>
+                                <div class="w-100 mt-2">
+                                    <div class="wrapper">
+                                        <div class="tda-content w-100">
+                                            Please ensure all ticket purchases are resolved, including refunds or alternative arrangements for customers, before proceeding. Once cancelled, this action is irreversible.
+                                        </div>
+                                    </div>
+                                    <div class="wrapper mb-0">
+                                        <div class="tda-content w-100">
+                                            <button class="btn-official btn-color-warning w-100" type="button" @click="openCancelModal">Confirm Cancellation</button>
+
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -278,9 +342,14 @@
                                 <label for="">Discount value</label>
                                 <div
                                     class="w-100 position-relative d-flex flex-column align-items-center justify-content-center">
-                                    <Percent v-if="form.discount_type === 'percentage'" :size="16" :stroke-width="1.75"
+                                    <!-- <Percent v-if="form.discount_type === 'percentage'" :size="16" :stroke-width="1.75"
                                         class="position-absolute" style="right: 10px;" />
                                     <DollarSign v-else :size="16" :stroke-width="1.75" class="position-absolute"
+                                        style="right: 10px;" /> -->
+                                        <Percent v-if="form.type === 'percentage'" :size="16" :stroke-width="1.75"
+                                        class="position-absolute" style="right: 10px;" />
+
+                                        <DollarSign v-else :size="16" :stroke-width="1.75" class="position-absolute"
                                         style="right: 10px;" />
                                     <input type="text" class="form-control w-100" placeholder="Enter discount value"
                                         :class="{ 'form-control-err': v$.value.$error }" v-model="form.value">
@@ -348,11 +417,11 @@
                         <span class="t-section d-flex">Active date</span>
                         <span class="b-t">Set when the promotion starts and ends.</span>
                         <div class="d-flex w-100 align-items-start mt-3">
-                            <div class="w-50">
+                            <div class="w-50 d-flex  flex-column">
                                 <label for="">Start date (Optional)</label>
-                                <FlatPickr v-model="form.start_at" placeholder="Select start date" style="width: max-content!important;"
-                                    class="form-control" :class="{ 'form-control-err': v$.start_at.$error }" 
-                                    :config="{ enableTime: true,dateFormat: 'Y-m-d H:i', static: true }" />
+                                <FlatPickr v-model="form.start_at" placeholder="Select start date"
+                                    class="form-control w-100" style="width: 100%!important;" :class="{ 'form-control-err': v$.start_at.$error }" 
+                                    :config="{ enableTime: true,dateFormat: 'Y-m-d H:i', static: false , minDate: 'today'}" />
                                 <span class="warning-msg-input" v-for="err in v$.start_at.$errors" :key="err.$uid">
                                     {{ err.$message }}
                                 </span>
@@ -365,7 +434,7 @@
                                     class="form-control"
                                     placeholder="Select end date"
                                     :class="{ 'form-control-err': v$.end_at?.$error }" @mousedown.stop
-                                    :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
+                                    :config="{ enableTime: true, dateFormat: 'Y-m-d H:i', minDate: 'today' }"
                                 />
 
                                 <span
@@ -454,10 +523,87 @@
                     <div class="" v-for="ticket in selectedDiscount.ticket_prices" :key="ticket.id">
                         <div class="list-selected-ticket">
                             <span class="val">{{ ticket.ticket_type.name }}</span>
-                            <span class="price">${{ ticket.price }}</span>
+                            <span class="price">Final Price:${{ ticket.price }}</span>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade event-confirm" id="publishEventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="modal-title">Publish Event</div>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+
+            <div class="modal-body pt-0 mt-0 mb-2">
+                <div class="info-modal mb-0">
+                    Before publishing, make sure:
+                </div>
+                <ul class="mb-1 info-modal">
+                    <li>Ticket prices are valid</li>
+                    <li>Venue and date are complete</li>
+                    <li>Event is ready for public access</li>
+                </ul>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 p-4 pt-0">
+                <button type="button" class="btn btn-official btn-color-cancel w-50" data-bs-dismiss="modal">
+                Cancel
+                </button>
+
+                <button type="button" class="btn btn-official btn-color w-50" @click="confirmPublishEvent">
+                Yes, Publish
+                </button>
+            </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade event-confirm" id="cancelEventModal" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <div class="modal-title text-danger">
+                        Event Cancellation
+                    </div>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="info-modal mb-2">
+                        You are about to cancel this event.
+                    </div>
+                    
+                    <div class="warning-wrapper mb-0">
+                        Once cancelled:
+                        <ul class="my-1 info-modal">
+                            <li>Ticket sales will be disabled automatically.</li>
+                            <li>All valid tickets will become cancelled.</li>
+                            <li>The event cannot be published again.</li>
+                        </ul>
+                    </div>
+                    <div class="info-modal text-danger mt-2">This action cannot be undone.</div>
+
+                </div>
+
+                <div class="d-flex justify-content-center gap-2 p-4 pt-0">
+
+                    <button class="btn btn-official btn-color-cancel w-50" data-bs-dismiss="modal">
+                        Keep Event
+                    </button>
+
+                    <button class="btn btn-official btn-color-warning w-50" @click="confirmCancellation">
+                        Yes, Cancel Event
+                    </button>
+
+                </div>
+
             </div>
         </div>
     </div>
@@ -476,7 +622,14 @@ import * as bootstrap from 'bootstrap'
 import FlatPickr from "vue-flatpickr-component"
 import "flatpickr/dist/flatpickr.css"
 import nprogress from 'nprogress';
+import { AuthStore } from '@/stores/AuthStore'
 
+
+const authStore = AuthStore()
+const isManager = computed(() =>
+    authStore.user?.role?.toLowerCase() === 'manager'
+)
+const saleEvent = ref(null)
 const route = useRoute()
 const toast = useToast()
 const isEditMode = ref(false)
@@ -530,7 +683,7 @@ const rules = computed(() => ({
         minValue: minValue(1),
     },
     max_usage: { required, numeric, minValue: minValue(1) },
-    min_quantity: { required, numeric, minValue: minValue(1) },
+    min_quantity: { required, numeric, minValue: minValue(0.01) },
     ticket_price_ids: {
         required: helpers.withMessage('Select at least 1 ticket', required),
     },
@@ -547,6 +700,9 @@ const fetchEvent = async () => {
     const token = localStorage.getItem('auth_token')
     const res = await eventStore.getEventBySlug(token, route.params.slug)
     event.value = res.data
+    const saleRes = await eventStore.getSaleSummaryBySlug(token, route.params.slug);
+    saleEvent.value = saleRes.data;
+
 }
 
 const fetchPromotionTypes = async () => {
@@ -610,7 +766,7 @@ const toggleEndDate = () => {
    SUBMIT (FIX BACKEND FORMAT)
 ========================= */
 const submitDiscount = async () => {
-    alert(editingDiscountId.value)
+    // alert(editingDiscountId.value)
     const isValid = await v$.value.$validate()
     console.log('validation result:', isValid)
     if (!isValid) return
@@ -747,7 +903,6 @@ const resetForm = () => {
    INIT
 ========================= */
 onMounted(async () => {
-
     nprogress.start()
     await fetchEvent()
     await fetchDiscounts()
@@ -775,7 +930,7 @@ const selectedDiscountTypeName = computed(() => {
 })
 const confirmDeleteDiscount = async () => {
     try {
-        alert(deleteDiscountData.value.id)
+        // alert(deleteDiscountData.value.id)
         const token = localStorage.getItem('auth_token')
 
         const res = await discountStore.deleteDiscount(
@@ -978,4 +1133,172 @@ watch(discountInfo, async () => {
 
     $('.ui.dropdown.settings-dropdown').dropdown()
 })
+
+let cancelModalInstance = null
+
+const openCancelModal = () => {
+    const modalEl = document.getElementById('cancelEventModal')
+    cancelModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl)
+    cancelModalInstance.show()
+}
+let publishModalInstance = null
+
+const openPublishModal = () => {
+    const modalEl = document.getElementById('publishEventModal')
+    publishModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl)
+    publishModalInstance.show()
+}
+const toggleSales = async (e) => {
+    const enabled = e.target.checked;
+
+    try {
+        const token = localStorage.getItem('auth_token');
+
+        const res = await eventStore.updateSalesStatus(
+            event.value.id,
+            token,
+            enabled
+        );
+
+        if (res?.result === false) {
+            toast.add({
+                severity: 'error',
+                summary: 'Not allowed',
+                detail: res.message || 'Unable to update ticket sales.',
+                life: 3000
+            });
+
+            // Roll back switch
+            e.target.checked = !enabled;
+            return;
+        }
+
+        await fetchEvent();
+
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: enabled
+                ? 'Ticket sales have been enabled.'
+                : 'Ticket sales have been disabled.',
+            life: 3000
+        });
+
+    } catch (error) {
+
+        const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            'Failed to update ticket sales.';
+
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        });
+
+        e.target.checked = !enabled;
+    }
+};
+const confirmPublishEvent = async () => {
+    try {
+        const token = localStorage.getItem('auth_token')
+
+        const res = await eventStore.updateEventStatus(
+            event.value.id,
+            token,
+            'published'
+        )
+
+        if (res?.result === false) {
+            toast.add({
+                severity: 'error',
+                summary: 'Not allowed',
+                detail: res.message || 'Cannot publish event',
+                life: 3000
+            })
+            return
+        }
+
+        await fetchEvent()
+
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Event published successfully',
+            life: 3000
+        })
+
+        // ✅ CLOSE MODAL HERE (after success)
+        const modalEl = document.getElementById('publishEventModal')
+        const modal = bootstrap.Modal.getInstance(modalEl)
+        modal.hide()
+
+    } catch (error) {
+        const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            'Failed to publish event'
+
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    }
+}
+const cancelPublish = () => {
+    showPublishModal.value = false
+    pendingPublish.value = false
+}
+const confirmCancellation = async () => {
+    try {
+        const token = localStorage.getItem('auth_token')
+
+        const res = await eventStore.updateEventStatus(
+            event.value.id,
+            token,
+            'cancelled'
+        )
+
+        if (res?.result === false) {
+            toast.add({
+                severity: 'error',
+                summary: 'Not allowed',
+                detail: res.message || 'Unable to cancel event.',
+                life: 3000
+            })
+            return
+        }
+
+        await fetchEvent()
+
+        toast.add({
+            severity: 'success',
+            summary: 'Event Cancelled',
+            detail: 'The event has been cancelled successfully.',
+            life: 3000
+        })
+
+        // Close modal
+        const modalEl = document.getElementById('cancelEventModal')
+        bootstrap.Modal.getInstance(modalEl)?.hide()
+
+    } catch (error) {
+
+        const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            'Failed to cancel event.'
+
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    }
+}
 </script>

@@ -1,4 +1,12 @@
 <template>
+    <div class="pf d-flex align-items-center mb-4">
+        <img :src="authStore.user.avatar" alt="">
+        <div class="d-flex flex-column ms-2">
+            <span class="fw-medium name">{{ authStore.user.name }} <span class="role rounded-pill">{{
+                authStore.user.role }}</span></span>
+            <span class="email">{{ authStore.user.email }}</span>
+        </div>
+    </div>
     <div class="setting-sidebar">
 
         <ul class="list-unstyled text-decoration-none list-setting">
@@ -18,9 +26,9 @@
             </li>
 
             <li>
-                <router-link to="/setting-notification">
-                    <Bell :stroke-width="1.75" size="19" class="icon me-2" />
-                    Notifications
+                <router-link to="/manage-devices">
+                    <MonitorSmartphone :stroke-width="1.75" size="19" class="icon me-2" />
+                    Manage Devices
                 </router-link>
             </li>
 

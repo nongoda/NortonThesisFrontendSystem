@@ -1,21 +1,27 @@
 <template>
-    <div class="container auth forgotPassword">
-        <div class="particles-container">
-            <Particles
-                :particle-count="700"
-                :particle-spread="15"
-                :speed="0.1"
-                :particle-colors="['#7e05a3']"
-                :move-particles-on-hover="true"
-                :particle-hover-factor="0.8"
-                :alpha-particles="false"
-                :particle-base-size="70"
-                :size-randomness="4"
-                :camera-distance="2"                
-                :disable-rotation="false"
-                class="h-full"
+    <div class="lighfall-container" style="z-index: -1;">
+        <div class="lighfall-wrapper">
+            <Lightfall
+              :colors="['#ffffff', '#ffffff', '#FF9FFC']"
+              background-color="#7C3AED"
+              :speed="0.2"
+              :streak-count="2"
+              :streak-width="0.5"
+              :streak-length="1"
+              :glow="0.2"
+              :density="1"
+              :twinkle="1"
+              :zoom="1.2"
+              :background-glow="0.5"
+              :opacity="1"
+              :mouse-interaction="false"
+              :mouse-strength="1"
+              :mouse-radius="0.6"
             />
+
         </div>
+    </div>
+    <div class="container auth forgotPassword login">
         <div class="row justify-content-center">        
             <div class="col-5">
                 <div class="card one" style="z-index: 4;">
@@ -29,7 +35,7 @@
                         </div>
                         <button type="submit" class="btn-official btn-color w-100 mb-3 mt-4">Send OTP</button>
                     </form>
-                    <div class="d-flex align-items-center justify-content-center">
+                    <div class="d-flex align-items-center justify-content-center mt-3">
                         <a href="#" class="text-decoration-none btn btn-official back text-black" @click.prevent="$router.back()">
                             <MoveLeft class="me-2 icon" /> Back to previous page
                         </a>
@@ -53,7 +59,7 @@
 </style>
 
 <script setup>
-    import Particles from '@/components/elements/Particles.vue';
+    import Lightfall from '@/components/elements/Lightfall.vue';
     import nprogress from 'nprogress';
     import { RouterLink } from 'vue-router';
     import '@/assets/styles/oda.style.css'
@@ -85,7 +91,7 @@
 
     const email = authStore.emailForgotpassword.email;
 
-    localStorage.setItem('otp_email', email);
+    // localStorage.setItem('otp_email', email);
     localStorage.setItem('forgotPasswordProcess', 'true');
 
     try {
@@ -100,7 +106,6 @@
 
     nprogress.done();
 
-    // 🔥 ALWAYS GO NEXT
     router.push('/verify-otp');
 
     authStore.emailForgotpassword.email = '';

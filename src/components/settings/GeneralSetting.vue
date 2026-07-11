@@ -1,12 +1,5 @@
 <template>
     <div class="row setting">
-        <div class="pf d-flex align-items-center mb-4">
-            <img :src="user.avatar" alt="">
-            <div class="d-flex flex-column ms-2">
-                <span class="fw-medium name">{{ user.name }} <span class="role rounded-pill">{{ user.role}}</span>/{{ currentSettingPage }}</span>
-                <span class="email">Update your profile information and manage your account</span>
-            </div>
-        </div>
         <div class="col-3">
             <SettingSidebar />
         </div>

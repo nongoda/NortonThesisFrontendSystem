@@ -22,7 +22,7 @@
                     <div class="row">
                         <div class="col-7 event-preview">
                             <div class="content-wrapper-section">
-                                <router-link :to="`/events/preview/update/${event.slug}`"
+                                <router-link :to="`/events/preview/update/${event.slug}`" v-if="isManager && event.status == 'published'" 
                                     class="update-event-information btn btn-official btn-outline small-btn position-absolute">
                                     <PenLine :stroke-width="1.75" /> Edit
                                 </router-link>
@@ -54,7 +54,7 @@
                             </div>
                             
                             <div class="content-wrapper-section">
-                                <router-link :to="`/events/preview/update/${event.slug}`"
+                                <router-link :to="`/events/preview/update/${event.slug}`" v-if="isManager && event.status === 'published'" 
                                     class="update-event-information btn btn-official btn-outline small-btn position-absolute">
                                     <PenLine :stroke-width="1.75" /> Edit
                                 </router-link>
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                             <div class="content-wrapper-section">
-                                <router-link :to="`/events/preview/update/${event.slug}`"
+                                <router-link :to="`/events/preview/update/${event.slug}`" v-if="isManager && event.status === 'published'" 
                                     class="update-event-information btn btn-official btn-outline small-btn position-absolute">
                                     <PenLine :stroke-width="1.75" /> Edit
                                 </router-link>
@@ -114,7 +114,7 @@
                                 </div>
                             </div>
                             <div class="content-wrapper-section">
-                                <router-link :to="`/events/preview/update/${event.slug}`"
+                                <router-link :to="`/events/preview/update/${event.slug}`" v-if="isManager && event.status === 'published'" 
                                     class="update-event-information btn btn-official btn-outline small-btn position-absolute">
                                     <PenLine :stroke-width="1.75" /> Edit
                                 </router-link>
@@ -123,13 +123,13 @@
                                 </span>
                                 <div class="w-100 mt-2">
                                     <div class="wrapper">
-                                        <span class="vlaue tda-content">{{ event.description || 'N/A' }}</span>
+                                        <span class="vlaue tda-content w-100">{{ event.description || 'N/A' }}</span>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
-                        <div class="col-5 event-preview">
+                        <div class="col-5 event-preview right">
 
                             <div class="content-wrapper-section">
                                 <span class="title-event">
@@ -156,11 +156,11 @@
                                         <div class="tda">Updated at:</div>
                                         <span class="vlaue tda-content">{{ formatDateTime(event.updated_at)}}</span>
                                     </div>
-                                    <div class="wrapper align-items-center mb-0">
-                                        <div class="tda">Published:</div>
+                                    <div class="wrapper align-items-center mb-0" v-if="isManager && event.status === 'published'">
+                                        <div class="tda">Enable ticket sales:</div>
                                         <div class="status-update tda-content d-flex align-items-center">
                                             <label class="switch mb-0" :class="{ 'outdated-switch': isOutdated }">
-                                                <input :checked="event.status === 'published'" type="checkbox" @change="toggleStatus">
+                                                <input :checked="event.is_sales_enabled"type="checkbox" @change="toggleSales">
                                                 <div class="slider">
                                                     <div class="circle">
                                                         <svg class="cross" xml:space="preserve"
@@ -192,10 +192,73 @@
                                         </div>
                                         <!-- <span class="vlaue tda-content">{{ formatDateTime(event.updated_at)}}</span> -->
                                     </div>
+                                     <div class="wrapper mb-0">
+                                        <button class="btn-official btn-color w-100" type="button" v-if="event.status == 'draft'" @click="openPublishModal">
+                                            Publish event
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-wrapper-section" v-if="saleEvent">
+                                <span class="title-event">
+                                    Sales Overview
+                                </span>
+                                <div class="w-100 mt-2">
+
+                                    <div class="wrapper">
+                                        <div class="tda">Total Revenue:</div>
+                                        <div class="tda-content">
+                                            {{ saleEvent.revenue.usd.value }} $ 
+                                        </div>
+                                    </div>
+                                    <div class="wrapper">
+                                        <div class="tda">Tickets Sold:</div>
+                                        <span class="vlaue tda-content">{{ saleEvent.tickets_sold }} / {{ saleEvent.original_tickets }}</span>
+                                    </div>
+                                    <div class="wrapper mb-0">
+                                        <div class="tda">Remaining Tickets:</div>
+                                        <span class="vlaue tda-content">{{ saleEvent.remaining_tickets }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-wrapper-section" v-if="saleEvent?.ticket_types && saleEvent.ticket_types.length > 0">
+                                <span class="title-event">
+                                    Ticket Type Breakdown
+                                </span>
+                                <div class="w-100 mt-2">
+                                    <div class="wrapper" v-for="ticket in saleEvent.ticket_types"
+                                        :key="ticket.ticket_price_id">
+                                        <div class="tda">
+                                            Tickets {{ ticket.ticket_type }}:
+                                        </div>
+
+                                        <div class="tda-content">
+                                            {{ ticket.sold }} Tickets/ {{ ticket.revenue.usd.value }}$
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-wrapper-section cancellation" v-if="event.status === 'published' && isManager">
+                                <span class="title-event">
+                                    Confirm Event Cancellation
+                                </span>
+                                <div class="w-100 mt-2">
+                                    <div class="wrapper">
+                                        <div class="tda-content w-100">
+                                            Please ensure all ticket purchases are resolved, including refunds or alternative arrangements for customers, before proceeding. Once cancelled, this action is irreversible.
+                                        </div>
+                                    </div>
+                                    <div class="wrapper mb-0">
+                                        <div class="tda-content w-100">
+                                            <button class="btn-official btn-color-warning w-100" type="button" @click="openCancelModal">Confirm Cancellation</button>
+
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                             <div class="content-wrapper-section position-relative">
-                                <router-link :to="`/events/preview/update/${event.slug}`"
+                                <router-link :to="`/events/preview/update/${event.slug}`" v-if="isManager && event.status === 'published'"
                                     class="update-event-information btn btn-official btn-outline small-btn position-absolute">
                                     <PenLine :stroke-width="1.75" /> Edit
                                 </router-link>
@@ -218,6 +281,83 @@
             </div>
         </div>
     </div>
+    <div class="modal fade event-confirm" id="publishEventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="modal-title">Publish Event</div>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+
+            <div class="modal-body pt-0 mt-0 mb-2">
+                <div class="info-modal mb-0">
+                    Before publishing, make sure:
+                </div>
+                <ul class="mb-1 info-modal">
+                    <li>Ticket prices are valid</li>
+                    <li>Venue and date are complete</li>
+                    <li>Event is ready for public access</li>
+                </ul>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 p-4 pt-0">
+                <button type="button" class="btn btn-official btn-color-cancel w-50" data-bs-dismiss="modal">
+                Cancel
+                </button>
+
+                <button type="button" class="btn btn-official btn-color w-50" @click="confirmPublishEvent">
+                Yes, Publish
+                </button>
+            </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade event-confirm" id="cancelEventModal" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <div class="modal-title text-danger">
+                        Event Cancellation
+                    </div>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="info-modal mb-2">
+                        You are about to cancel this event.
+                    </div>
+                    
+                    <div class="warning-wrapper mb-0">
+                        Once cancelled:
+                        <ul class="my-1 info-modal">
+                            <li>Ticket sales will be disabled automatically.</li>
+                            <li>All valid tickets will become cancelled.</li>
+                            <li>The event cannot be published again.</li>
+                        </ul>
+                    </div>
+                    <div class="info-modal text-danger mt-2">This action cannot be undone.</div>
+
+                </div>
+
+                <div class="d-flex justify-content-center gap-2 p-4 pt-0">
+
+                    <button class="btn btn-official btn-color-cancel w-50" data-bs-dismiss="modal">
+                        Keep Event
+                    </button>
+
+                    <button class="btn btn-official btn-color-warning w-50" @click="confirmCancellation">
+                        Yes, Cancel Event
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 </template>
 <style scope>
 .animate__animated {
@@ -231,68 +371,153 @@ import { EventStore } from '@/stores/EventStore'
 // import { EventStore } from '@/stores/EventStore';
 import { ref, onMounted, nextTick, watch } from 'vue';
 import $ from 'jquery'
+import { Modal } from 'bootstrap'
 import useVuelidate from '@vuelidate/core'
 import { computed } from 'vue'
 import { useToast } from 'primevue/usetoast'
+import nprogress from 'nprogress';
+import { AuthStore } from '@/stores/AuthStore'
+const showPublishModal = ref(false)
+const pendingPublish = ref(false)
+let cancelModalInstance = null
 
+const openCancelModal = () => {
+    const modalEl = document.getElementById('cancelEventModal')
+    cancelModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl)
+    cancelModalInstance.show()
+}
+let publishModalInstance = null
+
+const openPublishModal = () => {
+    const modalEl = document.getElementById('publishEventModal')
+    publishModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl)
+    publishModalInstance.show()
+}
+const authStore = AuthStore()
+const isAdmin = computed(() =>
+    authStore.user?.role?.toLowerCase() === 'admin'
+)
+
+
+const isManager = computed(() =>
+    authStore.user?.role?.toLowerCase() === 'manager'
+)
 // ===========================================
 
 const route = useRoute()
 const eventStore = EventStore()
 const event = ref(null)
+const saleEvent = ref(null)
 const loading = ref(true)
 const showEditForm = ref(true)
 const toast = useToast()
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-vue-next'
 // ==========================================
 onMounted(async () => {
+    nprogress.start()
+    
     await fetchEvent()
+    nprogress.done()
 })
 // ==========================================
-const toggleStatus = async (e) => {
-    const isChecked = e.target.checked;
-    const newStatus = isChecked ? 'published' : 'cancelled';
+// const toggleStatus = async (e) => {
+//     const isChecked = e.target.checked;
+//     const newStatus = isChecked ? 'published' : 'cancelled';
+
+//     try {
+//         const token = localStorage.getItem('auth_token');
+
+//         const res = await eventStore.updateStatus(
+//             event.value.id,
+//             token,
+//             newStatus
+//         );
+
+//         // ✅ HANDLE BACKEND LOGIC FAILURE
+//         if (res?.result === false) {
+//             toast.add({
+//                 severity: 'error',
+//                 summary: 'Not allowed',
+//                 detail: res.message || 'Cannot update status',
+//                 life: 3000
+//             });
+
+//             // rollback UI
+//             e.target.checked = !isChecked;
+//             return;
+//         }
+
+//         // ✅ refresh full event to avoid missing data issues
+//         await fetchEvent();
+
+//         toast.add({
+//             severity: 'success',
+//             summary: 'Success',
+//             detail: `Event status updated to ${newStatus}`,
+//             life: 3000
+//         });
+
+//     } catch (error) {
+//         console.log(error);
+
+//         const message =
+//             error?.response?.data?.message ||
+//             error?.response?.data?.msg ||
+//             'Failed to update event status';
+
+//         toast.add({
+//             severity: 'error',
+//             summary: 'Error',
+//             detail: message,
+//             life: 3000
+//         });
+
+//         // rollback UI switch
+//         e.target.checked = !isChecked;
+//     }
+// };
+const toggleSales = async (e) => {
+    const enabled = e.target.checked;
 
     try {
         const token = localStorage.getItem('auth_token');
 
-        const res = await eventStore.updateStatus(
+        const res = await eventStore.updateSalesStatus(
             event.value.id,
             token,
-            newStatus
+            enabled
         );
 
-        // ✅ HANDLE BACKEND LOGIC FAILURE
         if (res?.result === false) {
             toast.add({
                 severity: 'error',
                 summary: 'Not allowed',
-                detail: res.message || 'Cannot update status',
+                detail: res.message || 'Unable to update ticket sales.',
                 life: 3000
             });
 
-            // rollback UI
-            e.target.checked = !isChecked;
+            // Roll back switch
+            e.target.checked = !enabled;
             return;
         }
 
-        // ✅ refresh full event to avoid missing data issues
         await fetchEvent();
 
         toast.add({
             severity: 'success',
             summary: 'Success',
-            detail: `Event status updated to ${newStatus}`,
+            detail: enabled
+                ? 'Ticket sales have been enabled.'
+                : 'Ticket sales have been disabled.',
             life: 3000
         });
 
     } catch (error) {
-        console.log(error);
 
         const message =
             error?.response?.data?.message ||
             error?.response?.data?.msg ||
-            'Failed to update event status';
+            'Failed to update ticket sales.';
 
         toast.add({
             severity: 'error',
@@ -301,10 +526,109 @@ const toggleStatus = async (e) => {
             life: 3000
         });
 
-        // rollback UI switch
-        e.target.checked = !isChecked;
+        e.target.checked = !enabled;
     }
 };
+const confirmPublishEvent = async () => {
+    try {
+        const token = localStorage.getItem('auth_token')
+
+        const res = await eventStore.updateEventStatus(
+            event.value.id,
+            token,
+            'published'
+        )
+
+        if (res?.result === false) {
+            toast.add({
+                severity: 'error',
+                summary: 'Not allowed',
+                detail: res.message || 'Cannot publish event',
+                life: 3000
+            })
+            return
+        }
+
+        await fetchEvent()
+
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Event published successfully',
+            life: 3000
+        })
+
+        // ✅ CLOSE MODAL HERE (after success)
+        const modalEl = document.getElementById('publishEventModal')
+        const modal = bootstrap.Modal.getInstance(modalEl)
+        modal.hide()
+
+    } catch (error) {
+        const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            'Failed to publish event'
+
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    }
+}
+const cancelPublish = () => {
+    showPublishModal.value = false
+    pendingPublish.value = false
+}
+const confirmCancellation = async () => {
+    try {
+        const token = localStorage.getItem('auth_token')
+
+        const res = await eventStore.updateEventStatus(
+            event.value.id,
+            token,
+            'cancelled'
+        )
+
+        if (res?.result === false) {
+            toast.add({
+                severity: 'error',
+                summary: 'Not allowed',
+                detail: res.message || 'Unable to cancel event.',
+                life: 3000
+            })
+            return
+        }
+
+        await fetchEvent()
+
+        toast.add({
+            severity: 'success',
+            summary: 'Event Cancelled',
+            detail: 'The event has been cancelled successfully.',
+            life: 3000
+        })
+
+        // Close modal
+        const modalEl = document.getElementById('cancelEventModal')
+        bootstrap.Modal.getInstance(modalEl)?.hide()
+
+    } catch (error) {
+
+        const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.msg ||
+            'Failed to cancel event.'
+
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    }
+}
 // ==========================================
 
 const fetchEvent = async () => {
@@ -313,11 +637,12 @@ const fetchEvent = async () => {
         const slug = route.params.slug
         const res = await eventStore.getEventBySlug(token, slug)
         event.value = res.data
-        console.log(event.value)
-
+        // console.log(res.data)
+        const saleRes = await eventStore.getSaleSummaryBySlug(token, slug);
+        saleEvent.value = saleRes.data;
     } catch (error) {
 
-        console.log(error)
+        // console.log(error)
 
     } finally {
 
@@ -351,10 +676,10 @@ const isOutdated = computed(() => {
     if (!event.value?.start_date) return false;
 
     const startDate = new Date(event.value.start_date);
-    console.log('Start Date:', startDate); 
+    // console.log('Start Date:', startDate); 
 
     const now = new Date();
-    console.log('Current Date:', now);
+    // console.log('Current Date:', now);
     return event.value.status === 'published' && startDate <= now;
 });
 

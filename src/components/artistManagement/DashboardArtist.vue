@@ -145,7 +145,7 @@
                     </div>
 
                     <div class="d-flex justify-content-center" style="padding: 8px!important; width:15%">
-                        <div class="ui dropdown sort-field">
+                        <div class="ui dropdown sort-field move-left-dropdown">
                             <!-- <div class="ui dropdown sort-field"> -->
                             <div class="wrapper">
                                 <Ellipsis :size="16" :stroke-width="1.75" />

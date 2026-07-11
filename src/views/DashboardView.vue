@@ -1,22 +1,30 @@
 <template>
   <div class="layout">
-    <SidebarAdmin :isCollapsed="isCollapsed" @toggle="toggleSidebar" />
+    <Sidebar :isCollapsed="isCollapsed" @toggle="toggleSidebar" />
 
     <div class="main">
-      <Topbar/>
+      <Topbar />
 
       <div class="content">
-        <router-view />
+        <StaffDashboard v-if="role === 'staff'" />
+        <ManagerDashboard v-if="role === 'manager'" />
+        <AdminDashboard v-if="role === 'admin'" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import SidebarAdmin from '@/components/layouts/Sidebar.vue';
+import { ref, computed } from 'vue';
+import Sidebar from '@/components/layouts/Sidebar.vue';
 import Topbar from '@/components/layouts/Topbar.vue'
-import { AuthStore } from '@/stores/AuthStore';
+import StaffDashboard from '@/components/dashboards/StaffDashboard.vue';
+import ManagerDashboard from '@/components/dashboards/ManagerDashboard.vue';
+import AdminDashboard from '@/components/dashboards/AdminDashboard.vue';
+import { AuthStore } from '@/stores/AuthStore'
+
+const authStore = AuthStore()
+const role = computed(() => authStore.user?.role)
 
 const isCollapsed = ref(false)
 

@@ -1,11 +1,27 @@
-    <template>
-        <div class="container auth forgotPassword">
-            <div class="particles-container">
-                <Particles :particle-count="400" :particle-spread="10" :speed="0.1" :particle-colors="['#e8ccff']"
-                    :move-particles-on-hover="false" :particle-hover-factor="0.8" :alpha-particles="false"
-                    :particle-base-size="70" :size-randomness="1" :camera-distance="20" :disable-rotation="false"
-                    class="h-full" />
-            </div>
+<template>
+    <div class="lighfall-container" style="z-index: -1;">
+        <div class="lighfall-wrapper">
+            <Lightfall
+              :colors="['#ffffff', '#ffffff', '#FF9FFC']"
+              background-color="#7C3AED"
+              :speed="0.2"
+              :streak-count="2"
+              :streak-width="0.5"
+              :streak-length="1"
+              :glow="0.2"
+              :density="1"
+              :twinkle="1"
+              :zoom="1.2"
+              :background-glow="0.5"
+              :opacity="1"
+              :mouse-interaction="false"
+              :mouse-strength="1"
+              :mouse-radius="0.6"
+            />
+
+        </div>
+    </div>
+    <div class="container auth forgotPassword login">
 
             <div class="row justify-content-center pt-2">
                 <div class="col-5 mt-3">
@@ -54,6 +70,9 @@
                             </div>
                             <button type="button" @click="verifyOtp"
                                 class="btn btn-official btn-color rounded-pill w-100">Verify</button>
+                            <router-link to="/" class="back-page m-auto w-100 d-flex align-items-center justify-content-center mt-3">
+                                <ArrowLeft :size="18" :stroke-width="1.75" /> Back to pervious
+                            </router-link>
                         </form>
                     </div>
                 </div>
@@ -76,11 +95,12 @@
 import Vue3OtpInput from 'vue3-otp-input';
 import Particles from '../elements/Particles.vue';
 import ShinyText from '../elements/ShinyText.vue';
+import Lightfall from '../elements/Lightfall.vue';
 import { AuthStore } from '@/stores/AuthStore.js';
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import nprogress from 'nprogress';
-
+import { onBeforeRouteLeave } from 'vue-router'
 const router = useRouter()
 
 const authStore = AuthStore();
@@ -120,6 +140,14 @@ onMounted(() => {
     startCountdown()
 })
 
+onBeforeRouteLeave((to, from, next) => {
+
+    if (to.path === '/') {
+        authStore.clearOtpTimer()
+    }
+
+    next()
+})
 const startCountdown = () => {
     if (intervalId) clearInterval(intervalId)
 
@@ -190,22 +218,13 @@ const verifyOtp = async () => {
         if (res?.result) {
             authStore.saveLoginSession(res)
             authStore.clearOtpTimer()
-
-            const role = res.data.user.role
-            // const redirects = {
-            //     admin: '/dashboard',
-            //     manager: '/events',
-            //     staff: '/home-page'
-            // }
-            router.push(roleRedirect[role] || '/')
+            router.push('/dashboard')
         } else {
             otpError.value = true
             otpMessage.value = res?.message || 'Invalid OTP'
         }
 
     } catch (err) {
-        // otpError.value = true
-        // otpMessage.value = 'Server error. Try again.'
     } finally {
         isVerifying.value = false
     }

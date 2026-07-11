@@ -46,7 +46,8 @@ import {
   Tag,
   UsersRound,
   Settings,
-  AudioLines
+  AudioLines,
+  Music
 } from 'lucide-vue-next'
 
 import { computed } from 'vue'
@@ -89,25 +90,37 @@ const menuGroups = [
         name: 'Dashboard',
         path: '/dashboard',
         icon: LayoutDashboard,
-        roles: ['admin']
+        roles: ['admin', 'manager', 'staff']
+      },
+    ]
+  },
+  {
+    title: 'Event Management',
+    items: [
+      {
+        name: 'Events',
+        path: '/events',
+        icon: CalendarDays,
+        roles: ['admin', 'manager']
       },
       {
-        name: 'Dashboard',
-        path: '/home',
-        icon: LayoutDashboard,
-        roles: ['manager']
+        // Staff only
+        name: 'Tickets',
+        path: '/tickets',
+        icon: Ticket,
+        roles: ['staff']
       },
       {
-        name: 'Dashboard',
-        path: '/home-page',
-        icon: LayoutDashboard,
+        name: 'Check-in',
+        path: '/check-in',
+        icon: ScanLine,
         roles: ['staff']
       },
     ]
   },
-  // <AudioLines />
+
   {
-    title: 'Event Management',
+    title: 'Music Management',
     items: [
       {
         name: 'Artists',
@@ -116,27 +129,15 @@ const menuGroups = [
         roles: ['admin', 'manager']
       },
       {
-        name: 'Events',
-        path: '/events',
-        icon: CalendarDays,
+        name: 'Songs',
+        path: '/songs',
+        icon: Music,
         roles: ['admin', 'manager']
       },
-      {
-        name: 'Tickets',
-        path: '/tickets',
-        icon: Ticket,
-        roles: ['admin', 'manager']
-      },
-      {
-        name: 'Check-in',
-        path: '/check-in',
-        icon: ScanLine,
-        roles: ['admin', 'staff']
-      },
+
     ]
   },
-
-  {
+    {
     title: 'User Management',
     items: [
       {
@@ -161,18 +162,12 @@ const menuGroups = [
         name: 'Payments',
         path: '/payments',
         icon: CreditCard,
-        roles: ['admin']
+        roles: ['admin', 'manager']
       },
       {
         name: 'Reports',
         path: '/reports',
         icon: BarChart3,
-        roles: ['admin', 'manager']
-      },
-      {
-        name: 'Promotions',
-        path: '/promotions',
-        icon: Tag,
         roles: ['admin', 'manager']
       },
     ]

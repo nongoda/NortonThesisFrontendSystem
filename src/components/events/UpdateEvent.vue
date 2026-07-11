@@ -3,14 +3,6 @@
         <div class="title-step">Explore Event Details</div>
         <span class="sm-step mt-2 d-flex">View all the essential information about this event.</span>
         <div class="table-content" style="margin-top: 15px;">
-            <ul class="view-type d-inline-flex mb-0" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation" style="margin-right: 4px;">
-                    <router-link to="" class="tab-table-type active">Event Information</router-link>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <router-link to="" class="tab-table-type">Ticket information</router-link>
-                </li>
-            </ul>
             <form action="" class="create-event-form cr" style="margin-top: 15px;">
                 <div class="row">
                     <div class="col-7 pe-5">
@@ -262,9 +254,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="">
+                                    </div>
                                     <transition-group name="artist-chip" tag="div" class="selected-artists-wrapper">
                                         <div class="selected-artist" v-for="artist in selectedArtists" :key="artist.id">
-                                            <img :src="artist.avatar || 'https://i.pinimg.com/736x/4c/42/e7/4c42e76f3be7c11d387ac24f45a78efc.jpg'"
+                                            <img :src="artist.thumbnail || 'https://i.pinimg.com/736x/4c/42/e7/4c42e76f3be7c11d387ac24f45a78efc.jpg'"
                                                 class="artist-avatar" />
                                             <span class="artist-name">{{ artist.name }}</span>
                                             <button type="button" @click.prevent="removeArtist(artist.id)"

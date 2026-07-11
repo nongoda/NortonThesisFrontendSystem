@@ -87,6 +87,15 @@ export const EventStore = defineStore('EventStore', {
                         });
             return res.data;
         },
+        async getSaleSummaryBySlug(token, slug){
+            const res = await axios.get(`/events/sale/${slug}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return res.data;
+        },
         async createEvent(token, payload) {
             try {
                 const res = await axios.post('/events', payload, {
@@ -116,10 +125,10 @@ export const EventStore = defineStore('EventStore', {
                 throw error.response?.data || error;
             }
         },
-        async updateStatus(id, token, status) {
+        async updateEventStatus(id, token, status) {
             try {
                 const res = await axios.post(
-                    `/events/update-status/${id}`,
+                    `/events/update-event-status/${id}`,
                     { status },
                     {
                         headers: {
@@ -129,8 +138,49 @@ export const EventStore = defineStore('EventStore', {
                 );
 
                 return res.data;
+
             } catch (error) {
-                throw error; // ✅ let component handle it
+                throw error.response?.data || error;
+            }
+        },
+        async updateSalesStatus(id, token, is_sales_enabled) {
+            try {
+                const res = await axios.post(
+                    `/events/update-sale-status/${id}`,
+                    {
+                        is_sales_enabled
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                return res.data;
+
+            } catch (error) {
+                throw error;
+            }
+        },
+        async updateTicketStatus(ticketId, token, is_active) {
+            try {
+                const res = await axios.put(
+                    `/ticket-prices/status/${ticketId}`,
+                    {
+                        is_active
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                return res.data;
+
+            } catch (error) {
+                throw error.response?.data || error;
             }
         },
         async createTicket(token, payload) {

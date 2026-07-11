@@ -51,7 +51,6 @@ export const AuthStore = defineStore('AuthStore', {
             reset_token: ''
         },
         loginOTP: '',
-        token: localStorage.getItem('authToken') || '',
     }),
     actions: {
         // =============================================
@@ -161,7 +160,9 @@ export const AuthStore = defineStore('AuthStore', {
         },
         clearOtpTimer() {
             localStorage.removeItem('otpEmail')
+            localStorage.removeItem('otp_email')
             localStorage.removeItem('otpStartTime')
+            localStorage.removeItem('reset_token')
             localStorage.removeItem('otpExpiresAt')
             localStorage.removeItem('otpResendAt')
             localStorage.removeItem('loginVerifyProcess')
@@ -285,7 +286,7 @@ export const AuthStore = defineStore('AuthStore', {
         },
         async forgotPasswordResetPassword(){
             try{
-                this.resetPasswordForm.email = localStorage.getItem('otp_email')
+                this.resetPasswordForm.email = localStorage.getItem('otpEmail')
                 this.resetPasswordForm.reset_token = localStorage.getItem('reset_token')
                 const res = await axios.put(
                     'auth/reset-password',

@@ -1,7 +1,7 @@
 <template>
     
     <LoginComponent/>
-    <footer class="no-link-footer" style="z-index: 1000;">
+    <footer class="no-link-footer position-absolute" style="z-index: 1000;">
         <small>Copyright © 2025 UI Initiative by Lacima Cartel</small>
     </footer>
 

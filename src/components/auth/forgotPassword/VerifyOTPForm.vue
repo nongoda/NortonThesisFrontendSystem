@@ -1,84 +1,89 @@
-    <template>
-        <div class="container auth forgotPassword">
-            <div class="particles-container">
-                <Particles :particle-count="400" :particle-spread="10" :speed="0.1" :particle-colors="['#e8ccff']"
-                    :move-particles-on-hover="false" :particle-hover-factor="0.8" :alpha-particles="false"
-                    :particle-base-size="70" :size-randomness="1" :camera-distance="20" :disable-rotation="false"
-                    class="h-full" />
-            </div>
+<template>
+    <div class="lighfall-container" style="z-index: -1;">
+        <div class="lighfall-wrapper">
+            <Lightfall
+              :colors="['#ffffff', '#ffffff', '#FF9FFC']"
+              background-color="#7C3AED"
+              :speed="0.2"
+              :streak-count="2"
+              :streak-width="0.5"
+              :streak-length="1"
+              :glow="0.2"
+              :density="1"
+              :twinkle="1"
+              :zoom="1.2"
+              :background-glow="0.5"
+              :opacity="1"
+              :mouse-interaction="false"
+              :mouse-strength="1"
+              :mouse-radius="0.6"
+            />
 
-            <div class="row justify-content-center pt-2">
-                <div class="col-5 mt-3">
-                    <div class="card one second">
-                        <span class="subTitle text-center">Verify to Reset Password</span>
-                        <span class="desc mt-1 d-flex align-items-center text-center justify-content-center">We’ve sent
-                            a one-time code to
-                            <ShinyText :text="maskEmail(email)" :speed="2" :delay="0.5" :disabled="false"
-                                :color="'#110c17'" :shine-color="'#b5b5b5'" :spread="100" :direction="'left'"
-                                :yoyo="false" :pause-on-hover="false" class="fw-medium ps-1" />
-                        </span>
-                        <form class="mt-3 OTP">
-                            <div class="">
-                                <label for="" class="d-flex align-items-center justify-content-start">OTP Verification
-                                    <small class="desc text-start d-flex ps-1">( Expires in: {{ formatTime }}
-                                        )</small></label>
-                                <Vue3OtpInput :key="otpKey" v-model="otp" :num-inputs="6" input-type="number"
-                                    separator=" " @on-complete="onOtpComplete" :is-disabled="timer === 0"
-                                    class="otp-input"
-                                    :class="{ 'otp-input-err': otpError, 'otp-input-disabled': timer === 0 }" />
-                            </div>
-                            <span class="text-start warning-msg-input" style="font-size: 14px!important;">{{ otpMessage
-                                }}</span>
-                            <div class="d-flex align-items-center justify-content-start my-3">
-                                
-                                <span v-if="resendTimer > 0" class="smalltxt">
-                                    Resend available in {{ resendTimer }} seconds.
-                                </span>
+        </div>
+    </div>
+    <div class="container auth forgotPassword login">
 
-                                <!-- AFTER TIMER ENDS -->
-                                <span v-else class="smalltxt">
-                                    Didn’t receive the code?
-                                </span>
-                                <button type="button" class="link bg-transparent text-decoration-underline ms-1"
-                                    style="font-size: 14px;" :disabled="resendTimer > 0 || resendBlocked"
-                                    @click="resendOtp">
-                                    Click here to resend
-                                </button>
-                            </div>
-                            <button type="button" @click="verifyOtp"
-                                class="btn btn-official btn-color rounded-pill w-100">Verify</button>
-                        </form>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <a href="#" class="text-decoration-none btn btn-official back" @click.prevent="$router.back()">
-                                <MoveLeft class="me-2 icon" /> Back to previous
-                            </a>
+        <div class="row justify-content-center pt-2">
+            <div class="col-5 mt-3">
+                <div class="card one second">
+                    <span class="subTitle text-center">Verify to Reset Password</span>
+                    <span class="desc mt-1 d-flex align-items-center text-center justify-content-center">We’ve sent
+                        a one-time code to
+                        <ShinyText :text="maskEmail(email)" :speed="2" :delay="0.5" :disabled="false"
+                            :color="'#110c17'" :shine-color="'#b5b5b5'" :spread="100" :direction="'left'"
+                            :yoyo="false" :pause-on-hover="false" class="fw-medium ps-1" />
+                    </span>
+                    <form class="mt-3 OTP">
+                        <div class="">
+                            <label for="" class="d-flex align-items-center justify-content-start">OTP Verification
+                                <small class="desc text-start d-flex ps-1">( Expires in: {{ formatTime }}
+                                    )</small></label>
+                            <Vue3OtpInput :key="otpKey" v-model="otp" :num-inputs="6" input-type="number"
+                                separator=" " @on-complete="onOtpComplete" :is-disabled="timer === 0"
+                                class="otp-input"
+                                :class="{ 'otp-input-err': otpError, 'otp-input-disabled': timer === 0 }" />
                         </div>
+                        <span class="text-start warning-msg-input" style="font-size: 14px!important;">{{ otpMessage
+                            }}</span>
+                        <div class="d-flex align-items-center justify-content-start my-3">
+                            
+                            <span v-if="resendTimer > 0" class="smalltxt">
+                                Resend available in {{ resendTimer }} seconds.
+                            </span>
+
+                            <!-- AFTER TIMER ENDS -->
+                            <span v-else class="smalltxt">
+                                Didn’t receive the code?
+                            </span>
+                            <button type="button" class="link bg-transparent text-decoration-underline ms-1"
+                                style="font-size: 14px;" :disabled="resendTimer > 0 || resendBlocked"
+                                @click="resendOtp">
+                                Click here to resend
+                            </button>
+                        </div>
+                        <button type="button" @click="verifyOtp"
+                            class="btn btn-official btn-color rounded-pill w-100">Verify</button>
+                    </form>
+                    <div class="d-flex align-items-center justify-content-center mt-3">
+                        <a href="#" class="text-decoration-none btn btn-official back" @click.prevent="$router.back()">
+                            <MoveLeft class="me-2 icon" /> Back to previous
+                        </a>
                     </div>
                 </div>
-                <!-- ================= -->
             </div>
+            <!-- ================= -->
         </div>
-    </template>
-<style scoped>
-.particles-container {
-    width: 100%;
-    height: 100%;
-    bottom: 0;
-    left: 0;
-    position: fixed;
-    z-index: -1 !important;
-    overflow: visible;
-}
-</style>
+    </div>
+</template>
 <script setup>
 import Vue3OtpInput from 'vue3-otp-input';
-import Particles from '@/components/elements/Particles.vue';
-// import { ref, onMounted, computed } from 'vue'
+import Lightfall from '@/components/elements/Lightfall.vue';
 import ShinyText from '@/components/elements/ShinyText.vue';
 import { AuthStore } from '@/stores/AuthStore.js';
 import { ref, onMounted, computed, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import nprogress from 'nprogress';
+import { onBeforeRouteLeave } from 'vue-router'
 
 const router = useRouter()
 
@@ -97,62 +102,29 @@ let intervalId = null
 
 
 const resendBlocked = ref(false)
+onBeforeRouteLeave((to, from, next) => {
 
-// onMounted(() => {
-//     // const storedEmail = localStorage.getItem('otp_email')
+    if (to.path === '/') {
+        authStore.clearOtpTimer()
+    }
 
-//     // if (!storedEmail) {
-//     //     otpMessage.value = 'Session expired. Please request OTP again.'
-//     //     return
-//     // }
-
-
-//     const storedEmail = localStorage.getItem('otp_email')
-//     const process = localStorage.getItem('forgotPasswordProcess')
-
-//     if (!storedEmail || process !== 'true') {
-//         router.replace('/send-otp')
-//         return
-//     }
-
-//     email.value = storedEmail
-
-//     // ALWAYS start a fresh UI timer (fake-safe)
-//     const now = Date.now()
-
-//     authStore.otpTime = {
-//         email: storedEmail,
-//         startAt: now,
-//         expiresAt: now + 5 * 60 * 1000,   // 5 minutes
-//         resendAt: now + 60 * 1000         // 1 minute
-//     }
-
-//     timer.value = authStore.getRemainingOtpSeconds()
-//     resendTimer.value = authStore.getRemainingResendSeconds()
-
-//     startCountdown()
-// })
+    next()
+})
 onMounted(() => {
-    const storedEmail = localStorage.getItem('otp_email')
+    const storedEmail = localStorage.getItem('otpEmail')
     const process = localStorage.getItem('forgotPasswordProcess')
 
     if (!storedEmail || process !== 'true') {
         router.replace('/send-otp')
         return
     }
-
     email.value = storedEmail
-
-    // ✅ try to load existing timer
     const hasValidTimer = authStore.loadOtpTimer()
 
     if (!hasValidTimer) {
-        // ❌ timer expired or missing → force restart flow
         router.replace('/send-otp')
         return
     }
-
-    // ✅ use existing timer (NO RESET)
     timer.value = authStore.getRemainingOtpSeconds()
     resendTimer.value = authStore.getRemainingResendSeconds()
 
@@ -223,12 +195,15 @@ const verifyOtp = async () => {
             return
         }
 
-        authStore.clearOtpTimer()
+        // localStorage.removeItem('otpEmail')
+        localStorage.removeItem('otpStartTime')
+        localStorage.removeItem('otpExpiresAt')
+        localStorage.removeItem('otpResendAt')
+        localStorage.removeItem('loginVerifyProcess')
+        localStorage.removeItem('verify_token')
         localStorage.removeItem('forgotPasswordProcess')
-
-
+        localStorage.removeItem('otp_issued')
         // authStore.clearOtpTimer()
-        // localStorage.setItem('forgotPasswordVerified', 'true')
         localStorage.setItem('reset_token', res.data.reset_token)
         router.push('/reset-password')
         
@@ -345,10 +320,7 @@ const resendOtp = async () => {
 
     try {
         const res = await authStore.forgotPasswordResendOTP(userEmail)
-
-        // ❌ Even if backend blocks → you STILL restart timer (your rule)
         const now = Date.now()
-
         authStore.otpTime.startAt = now
         authStore.otpTime.expiresAt = now + 5 * 60 * 1000
         authStore.otpTime.resendAt = now + 60 * 1000

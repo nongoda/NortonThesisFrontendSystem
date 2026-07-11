@@ -1,5 +1,27 @@
 <template>
-    <div class="container auth forgotPassword">
+        <div class="lighfall-container" style="z-index: -1;">
+        <div class="lighfall-wrapper">
+            <Lightfall
+              :colors="['#ffffff', '#ffffff', '#FF9FFC']"
+              background-color="#7C3AED"
+              :speed="0.2"
+              :streak-count="2"
+              :streak-width="0.5"
+              :streak-length="1"
+              :glow="0.2"
+              :density="1"
+              :twinkle="1"
+              :zoom="1.2"
+              :background-glow="0.5"
+              :opacity="1"
+              :mouse-interaction="false"
+              :mouse-strength="1"
+              :mouse-radius="0.6"
+            />
+
+        </div>
+    </div>
+    <div class="container auth forgotPassword login">
         <div class="row justify-content-center">
             <div class="col-5 my-4">
                 <div class="card one">
@@ -36,6 +58,7 @@
 
 </template>
 <script setup>
+    import Lightfall from '@/components/elements/Lightfall.vue';
     import nprogress from 'nprogress';
     import { RouterLink } from 'vue-router';
     import '@/assets/styles/oda.style.css'
@@ -71,29 +94,6 @@
                 samePassword: helpers.withMessage('Passwords do not match.', (value, vm) => value === vm.password)
         }
     }, authStore.resetPasswordForm)
-    // authStore.v = useVuelidate(samePassword, authStore.resetPasswordForm);
-    // const resetPassword = async () => {
-    //     resetError.value = ''
-    //     authStore.v.$validate()
-    //     if(authStore.v.$error) return
-    //     try{
-    //         nprogress.start()
-    //         const res = await authStore.forgotPasswordResetPassword()
-    //         nprogress.done()
-            
-    //         if (res?.result) {
-    //             authStore.saveLoginSession(res)
-    //             authStore.clearOtpTimer()
-    //             router.push('/home')
-    //         } else {
-    //             otpError.value = true
-    //             otpMessage.value = res?.message || 'Invalid OTP'
-    //         }
-            
-    //     }catch(error){
-    //         // console.log(error.message)
-    //     }
-    // }
 
     const resetPassword = async () => {
         resetError.value = ''
@@ -113,7 +113,7 @@
                 authStore.saveLoginSession(res)
 
                 localStorage.removeItem('reset_token')
-                localStorage.removeItem('otp_email')
+                localStorage.removeItem('otpEmail')
 
                 authStore.clearOtpTimer()
 
